@@ -18,7 +18,7 @@ public class Policy extends BaseEntity {
 
     private Date policyEndDate;
 
-    private Long policyHolderId;
+    private String policyHolderId;
 
     private int numberOfUnits;
 
@@ -76,7 +76,7 @@ public class Policy extends BaseEntity {
      * Method contains a unique id to identify the Policy Holder
      * @return Unique identifer to represent the Policy Holder
      */
-    public Long getPolicyHolderId() {
+    public String getPolicyHolderId() {
         return policyHolderId;
     }
 
@@ -84,7 +84,7 @@ public class Policy extends BaseEntity {
      * Method sets the Policy Holder Id. A unique id to identify the Policy Holder
      * @param policyHolderId Unique Identifier to represent the Policy holder
      */
-    public void setPolicyHolderId(Long policyHolderId) {
+    public void setPolicyHolderId(String policyHolderId) {
         this.policyHolderId = policyHolderId;
     }
 

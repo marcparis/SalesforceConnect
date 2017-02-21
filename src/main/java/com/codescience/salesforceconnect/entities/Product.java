@@ -15,7 +15,7 @@ public class Product extends BaseEntity {
 
     private BigDecimal costPerUnit;
 
-    private boolean activeProduct;
+    private boolean active;
 
     /**
      * Method returns the name of the Product
@@ -69,16 +69,16 @@ public class Product extends BaseEntity {
      * Method returns true if the product is Active
      * @return true if the product is Active
      */
-    public boolean isActiveProduct() {
-        return activeProduct;
+    public boolean isActive() {
+        return active;
     }
 
     /**
      * Method sets true if the product is Active
-     * @param activeProduct boolean set to true if the product is Active
+     * @param active boolean set to true if the product is Active
      */
-    public void setActiveProduct(boolean activeProduct) {
-        this.activeProduct = activeProduct;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class Product extends BaseEntity {
 
         Product product = (Product) o;
 
-        if (isActiveProduct() != product.isActiveProduct()) return false;
+        if (isActive() != product.isActive()) return false;
         if (getProductName() != null ? !getProductName().equals(product.getProductName()) : product.getProductName() != null)
             return false;
         if (getProductType() != null ? !getProductType().equals(product.getProductType()) : product.getProductType() != null)
@@ -103,7 +103,7 @@ public class Product extends BaseEntity {
         result = 31 * result + (getProductName() != null ? getProductName().hashCode() : 0);
         result = 31 * result + (getProductType() != null ? getProductType().hashCode() : 0);
         result = 31 * result + (getCostPerUnit() != null ? getCostPerUnit().hashCode() : 0);
-        result = 31 * result + (isActiveProduct() ? 1 : 0);
+        result = 31 * result + (isActive() ? 1 : 0);
         return result;
     }
 
@@ -113,7 +113,7 @@ public class Product extends BaseEntity {
                 "productName='" + productName + '\'' +
                 ", productType='" + productType + '\'' +
                 ", costPerUnit=" + costPerUnit +
-                ", activeProduct=" + activeProduct +
+                ", active=" + active +
                 "} " + super.toString();
     }
 }

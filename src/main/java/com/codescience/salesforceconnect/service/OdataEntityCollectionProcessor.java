@@ -18,6 +18,7 @@ import org.apache.olingo.server.api.serializer.ODataSerializer;
 import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.serializer.SerializerResult;
 import org.apache.olingo.server.api.uri.*;
+import org.apache.olingo.server.api.uri.queryoption.IdOption;
 
 import java.util.List;
 import java.util.Locale;
@@ -64,10 +65,11 @@ public class OdataEntityCollectionProcessor implements EntityCollectionProcessor
 
         if (segmentCount == 1) {
             responseEdmEntitySet = startEdmEntitySet;
-            responseEntityCollection = storage.readEntitySetData(startEdmEntitySet);
+            responseEntityCollection = storage.readEntitySetData(startEdmEntitySet, uriInfo);
         }
         else {
             int segmentIndex = 1;
+            List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
             while (segmentIndex < segmentCount) {
                 UriResource lastSegment = resourceParts.get(segmentIndex);
                 if (lastSegment instanceof UriResourceNavigation) {
@@ -76,14 +78,15 @@ public class OdataEntityCollectionProcessor implements EntityCollectionProcessor
                     EdmEntityType targetEntityType = edmNavigationProperty.getType();
 
                     responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
-                    List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
 
                     Entity sourceEntity = storage.readEntityData(startEdmEntitySet, keyPredicates);
                     if (sourceEntity == null) {
                         throw new ODataApplicationException("Entity Not Found.", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.getDefault());
                     }
+
                     responseEntityCollection = storage.getRelatedEntityCollection(sourceEntity, targetEntityType);
                     startEdmEntitySet = responseEdmEntitySet;
+                    keyPredicates = uriResourceNavigation.getKeyPredicates();
                 }
                 segmentIndex++;
             }

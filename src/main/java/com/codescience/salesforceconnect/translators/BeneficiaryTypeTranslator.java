@@ -2,6 +2,7 @@ package com.codescience.salesforceconnect.translators;
 
 import com.codescience.salesforceconnect.entities.BaseEntity;
 import com.codescience.salesforceconnect.entities.Beneficiary;
+import com.codescience.salesforceconnect.service.Constants;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
@@ -24,14 +25,14 @@ public class BeneficiaryTypeTranslator extends ODataTypeTranslator {
         Beneficiary beneficiary = (Beneficiary) object;
         Entity entity = new Entity();
 
-        entity.addProperty(new Property(null, "Id", ValueType.PRIMITIVE, beneficiary.getId()));
-        entity.addProperty(new Property(null, "BeneficiaryPercent", ValueType.PRIMITIVE, beneficiary.getBeneficiaryPercent()));
+        entity.addProperty(new Property(null, Constants.BENEFICIARY_ID, ValueType.PRIMITIVE, beneficiary.getId()));
+        entity.addProperty(new Property(null, Constants.BENEFICIARY_PERCENT, ValueType.PRIMITIVE, beneficiary.getBeneficiaryPercent()));
         if (beneficiary.getBeneficiaryAmount() != null) {
-            entity.addProperty(new Property(null, "BeneficiaryAmount", ValueType.PRIMITIVE, beneficiary.getBeneficiaryAmount().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+            entity.addProperty(new Property(null, Constants.BENEFICIARY_AMOUNT, ValueType.PRIMITIVE, beneficiary.getBeneficiaryAmount().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
         }
-        entity.addProperty(new Property(null, "ContactIdentifierId", ValueType.PRIMITIVE, beneficiary.getContactIdentifierId()));
+        entity.addProperty(new Property(null, Constants.CONTACT_IDENTIFIER, ValueType.PRIMITIVE, beneficiary.getContactIdentifierId()));
         entity.setType(OdataEdmProvider.ET_BENEFICIARY_FQN.getFullQualifiedNameAsString());
-        entity.setId(createId(entity, "Id"));
+        entity.setId(createId(entity, Constants.BENEFICIARY_ID));
         return entity;
     }
 

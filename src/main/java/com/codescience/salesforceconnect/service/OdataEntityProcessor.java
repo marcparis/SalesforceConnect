@@ -90,6 +90,7 @@ public class OdataEntityProcessor implements EntityProcessor {
         }
         else {
             int segmentIndex = 1;
+            List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
             while (segmentIndex < segmentCount) {
                 UriResource nextSegment = resourceParts.get(segmentIndex);
                 if (nextSegment instanceof UriResourceNavigation) {
@@ -99,7 +100,6 @@ public class OdataEntityProcessor implements EntityProcessor {
                     responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
                     responseEdmEntityType = responseEdmEntitySet.getEntityType();
 
-                    List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
                     Entity sourceEntity = storage.readEntityData(startEdmEntitySet, keyPredicates);
 
                     List<UriParameter> navKeyPredicates = uriResourceNavigation.getKeyPredicates();
@@ -110,6 +110,7 @@ public class OdataEntityProcessor implements EntityProcessor {
                         responseEntity = storage.getRelatedEntity(sourceEntity, responseEdmEntityType, navKeyPredicates);
                     }
                     startEdmEntitySet = responseEdmEntitySet;
+                    keyPredicates = uriResourceNavigation.getKeyPredicates();
                 }
                 segmentIndex++;
             }

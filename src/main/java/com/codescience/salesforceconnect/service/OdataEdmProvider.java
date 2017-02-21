@@ -203,15 +203,15 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
      */
     private CsdlEntityType getProductEntityType() {
         //create EntityType properties
-        CsdlProperty productId = new CsdlProperty().setName("Id").setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
-        CsdlProperty productName = new CsdlProperty().setName("ProductName").setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-        CsdlProperty productType = new CsdlProperty().setName("ProductType").setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-        CsdlProperty costPerUnitAmount = new CsdlProperty().setName("CostPerUnitAmount").setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
-        CsdlProperty activeProduct = new CsdlProperty().setName("ActiveProduct").setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty productId = new CsdlProperty().setName(Constants.PRODUCT_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty productName = new CsdlProperty().setName(Constants.PRODUCT_NAME).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty productType = new CsdlProperty().setName(Constants.PRODUCT_TYPE).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty costPerUnitAmount = new CsdlProperty().setName(Constants.COST_PER_UNIT_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+        CsdlProperty activeProduct = new CsdlProperty().setName(Constants.PRODUCT_ACTIVE).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
 
         // create CsdlPropertyRef for Key element
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        propertyRef.setName("Id");
+        propertyRef.setName(Constants.PRODUCT_ID);
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
@@ -228,19 +228,19 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
      */
     private CsdlEntityType getPolicyEntityType() {
         //create EntityType properties
-        CsdlProperty policyId = new CsdlProperty().setName("Id").setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
-        CsdlProperty policyStartDate = new CsdlProperty().setName("PolicyStartDate").setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
-        CsdlProperty policyEndDate = new CsdlProperty().setName("PolicyEndDate").setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
-        CsdlProperty policyHolderId = new CsdlProperty().setName("PolicyHolderId").setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
-        CsdlProperty totalCostAmount = new CsdlProperty().setName("TotalCostAmount").setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
-        CsdlProperty numberOfUnits = new CsdlProperty().setName("NumberOfUnits").setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-        CsdlProperty active = new CsdlProperty().setName("Active").setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
-        CsdlNavigationProperty product = new CsdlNavigationProperty().setName("Product").setType(ET_PRODUCT_FQN).setNullable(false);
-        CsdlNavigationProperty claims = new CsdlNavigationProperty().setName("Claims").setType(ET_CLAIM_FQN).setCollection(true).setPartner("Policy");
+        CsdlProperty policyId = new CsdlProperty().setName(Constants.POLICY_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty policyStartDate = new CsdlProperty().setName(Constants.POLICY_START_DATE).setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+        CsdlProperty policyEndDate = new CsdlProperty().setName(Constants.POLICY_END_DATE).setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+        CsdlProperty policyHolderId = new CsdlProperty().setName(Constants.POLICY_HOLDER_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty totalCostAmount = new CsdlProperty().setName(Constants.TOTAL_COST_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+        CsdlProperty numberOfUnits = new CsdlProperty().setName(Constants.NUMBER_OF_UNITS).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+        CsdlProperty active = new CsdlProperty().setName(Constants.POLICY_ACTIVE).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
+        CsdlNavigationProperty product = new CsdlNavigationProperty().setName(Constants.PRODUCT).setType(ET_PRODUCT_FQN).setNullable(false);
+        CsdlNavigationProperty claims = new CsdlNavigationProperty().setName(Constants.CLAIMS).setType(ET_CLAIM_FQN).setCollection(true).setPartner(Constants.POLICY);
 
         // create CsdlPropertyRef for Key element
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        propertyRef.setName("Id");
+        propertyRef.setName(Constants.POLICY_ID);
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
@@ -258,17 +258,17 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
      */
     private CsdlEntityType getClaimEntityType() {
         //create EntityType properties
-        CsdlProperty claimId = new CsdlProperty().setName("Id").setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
-        CsdlProperty claimDate = new CsdlProperty().setName("ClaimDate").setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
-        CsdlProperty claimReason = new CsdlProperty().setName("ClaimReason").setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-        CsdlProperty approved = new CsdlProperty().setName("Approved").setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
-        CsdlProperty claimAmount = new CsdlProperty().setName("ClaimAmount").setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
-        CsdlNavigationProperty policy = new CsdlNavigationProperty().setName("Policy").setType(ET_POLICY_FQN).setNullable(false).setPartner("Claims");
-        CsdlNavigationProperty beneficiaries = new CsdlNavigationProperty().setName("Beneficiaries").setType(ET_BENEFICIARY_FQN).setCollection(true).setPartner("Claim");
+        CsdlProperty claimId = new CsdlProperty().setName(Constants.CLAIM_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty claimDate = new CsdlProperty().setName(Constants.CLAIM_DATE).setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+        CsdlProperty claimReason = new CsdlProperty().setName(Constants.CLAIM_REASON).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty approved = new CsdlProperty().setName(Constants.CLAIM_APPROVED).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
+        CsdlProperty claimAmount = new CsdlProperty().setName(Constants.CLAIM_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+        CsdlNavigationProperty policy = new CsdlNavigationProperty().setName(Constants.POLICY).setType(ET_POLICY_FQN).setNullable(false).setPartner(Constants.CLAIMS);
+        CsdlNavigationProperty beneficiaries = new CsdlNavigationProperty().setName(Constants.BENEFICIARIES).setType(ET_BENEFICIARY_FQN).setCollection(true).setPartner(Constants.CLAIM);
 
         // create CsdlPropertyRef for Key element
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        propertyRef.setName("Id");
+        propertyRef.setName(Constants.CLAIM_ID);
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
@@ -282,15 +282,15 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
     private CsdlEntityType getBeneficiaryEntityType() {
         //create EntityType properties
-        CsdlProperty beneficiaryId = new CsdlProperty().setName("Id").setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
-        CsdlProperty beneficiaryPercent = new CsdlProperty().setName("BeneficiaryPercent").setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
-        CsdlProperty beneficiaryAmount = new CsdlProperty().setName("BeneficiaryAmount").setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
-        CsdlProperty contactIdentifierId = new CsdlProperty().setName("ContactIdentifierId").setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
-        CsdlNavigationProperty claim = new CsdlNavigationProperty().setName("Claim").setType(ET_CLAIM_FQN).setNullable(false).setPartner("Beneficiaries");
+        CsdlProperty beneficiaryId = new CsdlProperty().setName(Constants.BENEFICIARY_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty beneficiaryPercent = new CsdlProperty().setName(Constants.BENEFICIARY_PERCENT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+        CsdlProperty beneficiaryAmount = new CsdlProperty().setName(Constants.BENEFICIARY_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+        CsdlProperty contactIdentifierId = new CsdlProperty().setName(Constants.CONTACT_IDENTIFIER).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlNavigationProperty claim = new CsdlNavigationProperty().setName(Constants.CLAIM).setType(ET_CLAIM_FQN).setNullable(false).setPartner(Constants.BENEFICIARIES);
 
         // create CsdlPropertyRef for Key element
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        propertyRef.setName("Id");
+        propertyRef.setName(Constants.BENEFICIARY_ID);
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();

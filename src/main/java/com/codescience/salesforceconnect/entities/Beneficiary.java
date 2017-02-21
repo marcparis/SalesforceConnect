@@ -13,7 +13,7 @@ public class Beneficiary extends BaseEntity {
 
     private Claim claim;
 
-    private Long contactIdentifierId;
+    private String contactIdentifierId;
 
     /**
      * Method returns the BeneficiaryPercent - A value between 0 and 100 or null if not specified
@@ -67,7 +67,7 @@ public class Beneficiary extends BaseEntity {
      * Method returns the Contact Identifier. This is a unique identifier that identifies an individual
      * @return Contact Identifier for the Beneficiary
      */
-    public Long getContactIdentifierId() {
+    public String getContactIdentifierId() {
         return contactIdentifierId;
     }
 
@@ -75,7 +75,7 @@ public class Beneficiary extends BaseEntity {
      * Method sets the Contact Identifier. This is a unique identifier that identifies an individual
      * @param contactIdentifierId Contact Identifier for the Beneficiary
      */
-    public void setContactIdentifierId(Long contactIdentifierId) {
+    public void setContactIdentifierId(String contactIdentifierId) {
         this.contactIdentifierId = contactIdentifierId;
     }
 

@@ -9,21 +9,21 @@ public abstract class BaseEntity implements Serializable, Comparable {
 
     static final long serialVersionUID = 1L;
 
-    private Long id;
+    private String id;
 
     /**
      * Method returns the Id (Primary Key) parameter.  All entities assumed to have Integer primary keys
-     * @return Long representing a primary key
+     * @return String representing a primary key
      */
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
     /**
      * Method sets the Id (Primary Key) parameter. All entities assumed to have Integer primary keys
-     * @param id Long representing a primary key
+     * @param id String representing a primary key
      */
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

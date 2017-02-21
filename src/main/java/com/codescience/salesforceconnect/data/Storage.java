@@ -4,6 +4,7 @@ import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
+import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface Storage {
      * @param edmEntitySet EDMEntitySet for the type to return
      * @return EntityCollection containing object objects for the entityset
      */
-    EntityCollection readEntitySetData(EdmEntitySet edmEntitySet);
+    EntityCollection readEntitySetData(EdmEntitySet edmEntitySet, UriInfo uriInfo);
 
     /**
      * Method retuns a single Entity for the EntitySet. It fileters based on the keyParams

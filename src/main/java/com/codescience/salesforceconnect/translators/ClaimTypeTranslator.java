@@ -2,6 +2,7 @@ package com.codescience.salesforceconnect.translators;
 
 import com.codescience.salesforceconnect.entities.BaseEntity;
 import com.codescience.salesforceconnect.entities.Claim;
+import com.codescience.salesforceconnect.service.Constants;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
@@ -24,15 +25,15 @@ public class ClaimTypeTranslator extends ODataTypeTranslator {
         Claim claim = (Claim) object;
         Entity entity = new Entity();
 
-        entity.addProperty(new Property(null, "Id", ValueType.PRIMITIVE, claim.getId()));
-        entity.addProperty(new Property(null, "ClaimDate", ValueType.PRIMITIVE, claim.getClaimDate()));
-        entity.addProperty(new Property(null, "ClaimReason", ValueType.PRIMITIVE, claim.getClaimReason()));
-        entity.addProperty(new Property(null, "Approved", ValueType.PRIMITIVE, claim.isApproved()));
+        entity.addProperty(new Property(null, Constants.CLAIM_ID, ValueType.PRIMITIVE, claim.getId()));
+        entity.addProperty(new Property(null, Constants.CLAIM_DATE, ValueType.PRIMITIVE, claim.getClaimDate()));
+        entity.addProperty(new Property(null, Constants.CLAIM_REASON, ValueType.PRIMITIVE, claim.getClaimReason()));
+        entity.addProperty(new Property(null, Constants.CLAIM_APPROVED, ValueType.PRIMITIVE, claim.isApproved()));
         if (claim.getClaimAmount() != null) {
-            entity.addProperty(new Property(null, "ClaimAmount", ValueType.PRIMITIVE, claim.getClaimAmount().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+            entity.addProperty(new Property(null, Constants.CLAIM_AMOUNT, ValueType.PRIMITIVE, claim.getClaimAmount().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
         }
         entity.setType(OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString());
-        entity.setId(createId(entity, "Id"));
+        entity.setId(createId(entity, Constants.CLAIM_ID));
         return entity;
     }
 

@@ -2,6 +2,7 @@ package com.codescience.salesforceconnect.translators;
 
 import com.codescience.salesforceconnect.entities.BaseEntity;
 import com.codescience.salesforceconnect.entities.Policy;
+import com.codescience.salesforceconnect.service.Constants;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
@@ -24,13 +25,13 @@ public class PolicyTypeTranslator extends ODataTypeTranslator {
         Policy policy = (Policy) object;
         Entity entity = new Entity();
 
-        entity.addProperty(new Property(null, "Id", ValueType.PRIMITIVE, policy.getId()));
-        entity.addProperty(new Property(null, "NumberOfUnits", ValueType.PRIMITIVE, policy.getNumberOfUnits()));
-        entity.addProperty(new Property(null, "PolicyEndDate", ValueType.PRIMITIVE, policy.getPolicyEndDate()));
-        entity.addProperty(new Property(null, "PolicyHolderId", ValueType.PRIMITIVE, policy.getPolicyHolderId()));
-        entity.addProperty(new Property(null, "PolicyStartDate", ValueType.PRIMITIVE, policy.getPolicyStartDate()));
+        entity.addProperty(new Property(null, Constants.POLICY_ID, ValueType.PRIMITIVE, policy.getId()));
+        entity.addProperty(new Property(null, Constants.NUMBER_OF_UNITS, ValueType.PRIMITIVE, policy.getNumberOfUnits()));
+        entity.addProperty(new Property(null, Constants.POLICY_END_DATE, ValueType.PRIMITIVE, policy.getPolicyEndDate()));
+        entity.addProperty(new Property(null, Constants.POLICY_HOLDER_ID, ValueType.PRIMITIVE, policy.getPolicyHolderId()));
+        entity.addProperty(new Property(null, Constants.POLICY_START_DATE, ValueType.PRIMITIVE, policy.getPolicyStartDate()));
         if (policy.getTotalCost() != null) {
-            entity.addProperty(new Property(null, "TotalCostAmount", ValueType.PRIMITIVE, policy.getTotalCost().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+            entity.addProperty(new Property(null, Constants.TOTAL_COST_AMOUNT, ValueType.PRIMITIVE, policy.getTotalCost().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
         }
         entity.addProperty(new Property(null, "Active", ValueType.PRIMITIVE, policy.isActive()));
         entity.setType(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString());
