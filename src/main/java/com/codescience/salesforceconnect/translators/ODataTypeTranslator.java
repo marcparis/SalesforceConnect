@@ -41,7 +41,7 @@ public abstract class ODataTypeTranslator {
      */
     protected URI createId(Entity entity, String idPropertyName, String navigationName) {
         try {
-            StringBuilder sb = new StringBuilder("www.jenningsparis.com:8080/SalesforceConnect/Odata.svc/" + getEntitySetName()).append("(");
+            StringBuilder sb = new StringBuilder(getEntitySetName()).append("(");
             final Property property = entity.getProperty(idPropertyName);
             sb.append("'").append(property.asPrimitive()).append("'").append(")");
             if(navigationName != null) {
