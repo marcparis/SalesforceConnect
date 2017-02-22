@@ -162,21 +162,21 @@ public class StoragePojo implements Storage {
         Beneficiary beneficiary = new Beneficiary();
         beneficiary.setId("4000");
         beneficiary.setBeneficiaryPercent(new BigDecimal(100));
-        beneficiary.setContactIdentifierId("10001");
+        beneficiary.setContactIdentifierId("20000");
         claim.addBeneficiary(beneficiary);
         mapOfBeneficiaries.put(beneficiary.getId(), beneficiary);
 
         Beneficiary beneficiary2 = new Beneficiary();
         beneficiary2.setId("4001");
         beneficiary2.setBeneficiaryPercent(new BigDecimal(75));
-        beneficiary2.setContactIdentifierId("10002");
+        beneficiary2.setContactIdentifierId("20001");
         claim2.addBeneficiary(beneficiary2);
         mapOfBeneficiaries.put(beneficiary2.getId(), beneficiary2);
 
         Beneficiary beneficiary3 = new Beneficiary();
         beneficiary3.setId("4002");
         beneficiary3.setBeneficiaryPercent(new BigDecimal(25));
-        beneficiary3.setContactIdentifierId("10003");
+        beneficiary3.setContactIdentifierId("20002");
         claim2.addBeneficiary(beneficiary3);
         mapOfBeneficiaries.put(beneficiary3.getId(), beneficiary3);
     }
