@@ -31,6 +31,7 @@ public class BeneficiaryTypeTranslator extends ODataTypeTranslator {
             entity.addProperty(new Property(null, Constants.BENEFICIARY_AMOUNT, ValueType.PRIMITIVE, beneficiary.getBeneficiaryAmount().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
         }
         entity.addProperty(new Property(null, Constants.CONTACT_IDENTIFIER, ValueType.PRIMITIVE, beneficiary.getContactIdentifierId()));
+        entity.addProperty(new Property(null, Constants.BENEFICIARY_CLAIM_ID, ValueType.PRIMITIVE, beneficiary.getClaim().getId()));
         entity.setType(OdataEdmProvider.ET_BENEFICIARY_FQN.getFullQualifiedNameAsString());
         entity.setId(createId(entity, Constants.BENEFICIARY_ID));
         return entity;

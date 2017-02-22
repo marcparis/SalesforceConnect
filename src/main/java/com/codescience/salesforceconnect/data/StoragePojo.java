@@ -196,23 +196,60 @@ public class StoragePojo implements Storage {
         FilterOption filterOption = uriInfo.getFilterOption();
 
         // TODO Enhance using more general expressions and visitors (future session)
+        // TODO Currently the code can only handle id eq value querries on primary keys.
+        // TODO Visitors provide a much more extensive and capable process and will be added next session
         String id = null;
+        boolean primaryKey = false;
+        boolean claimId = false;
+        boolean policyId = false;
+        boolean productId = false;
 
         if (filterOption != null) {
             String value = filterOption.getText().toLowerCase();
-            if (value.indexOf("id eq") > -1) {
-                Pattern p = Pattern.compile("-?\\d+");
-                Matcher m = p.matcher(value);
-                while (m.find()) {
-                    id = m.group();
-                }
+            if (value.indexOf("claimid eq") > -1) {
+                claimId = true;
+            }
+            else if (value.indexOf("policyid eq") > -1) {
+                policyId = true;
+
+            }
+            else if (value.indexOf("productid eq") > -1) {
+                productId = true;
+            }
+            else if (value.indexOf("id eq") > -1) {
+                primaryKey = true;
+            }
+            Pattern p = Pattern.compile("-?\\d+");
+            Matcher m = p.matcher(value);
+            while (m.find()) {
+                id = m.group();
             }
         }
-
         // Find the object with the key
         for (BaseEntity baseEntity : objects.get(objectType).values()) {
-            if (id == null || baseEntity.getId().equalsIgnoreCase(id)) {
+            if (id == null) {
                 entitySet.getEntities().add(odtt.translate(baseEntity));
+            }
+            else if (primaryKey && baseEntity.getId().equalsIgnoreCase(id)) {
+                entitySet.getEntities().add(odtt.translate(baseEntity));
+            }
+            else if (claimId) {
+                Beneficiary ben = (Beneficiary) baseEntity;
+                if (ben.getClaim().getId().equalsIgnoreCase(id)) {
+                    entitySet.getEntities().add(odtt.translate(baseEntity));
+                }
+            }
+            else if (policyId) {
+                Claim claim = (Claim) baseEntity;
+                if (claim.getPolicy().getId().equalsIgnoreCase(id)) {
+                    entitySet.getEntities().add(odtt.translate(baseEntity));
+                }
+            }
+            else if (productId) {
+                Policy pol = (Policy) baseEntity;
+                if (pol.getProduct().getId().equalsIgnoreCase(id)) {
+                    entitySet.getEntities().add(odtt.translate(baseEntity));
+                }
             }
         }
 

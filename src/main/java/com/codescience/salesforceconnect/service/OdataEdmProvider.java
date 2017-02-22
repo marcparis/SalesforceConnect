@@ -108,12 +108,12 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
                 List<CsdlNavigationPropertyBinding> navPropBindingList = new ArrayList<CsdlNavigationPropertyBinding>();
 
                 CsdlNavigationPropertyBinding navPropBinding = new CsdlNavigationPropertyBinding();
-                navPropBinding.setTarget(ES_PRODUCTS_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath("Product"); // the path from entity type to navigation property
+                navPropBinding.setTarget(CONTAINER.getFullQualifiedNameAsString() + "/" + ES_PRODUCTS_NAME); // the target entity set, where the navigation property points to
+                navPropBinding.setPath(ET_PRODUCT_NAME); // the path from entity type to navigation property
                 navPropBindingList.add(navPropBinding);
                 navPropBinding = new CsdlNavigationPropertyBinding();
                 navPropBinding.setTarget(ES_CLAIMS_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath("Claims"); // the path from entity type to navigation property
+                navPropBinding.setPath(ES_CLAIMS_NAME); // the path from entity type to navigation property
                 navPropBindingList.add(navPropBinding);
                 entitySet.setNavigationPropertyBindings(navPropBindingList);
 
@@ -129,13 +129,13 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
                 CsdlNavigationPropertyBinding navPropBinding = new CsdlNavigationPropertyBinding();
                 navPropBinding.setTarget(ES_POLICIES_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath("Policy"); // the path from entity type to navigation property
+                navPropBinding.setPath(ET_POLICY_NAME); // the path from entity type to navigation property
                 navPropBindingList.add(navPropBinding);
 
                 // navigation
                 navPropBinding = new CsdlNavigationPropertyBinding();
                 navPropBinding.setTarget(ES_BENEFICIARIES_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath("Beneficiaries"); // the path from entity type to navigation property
+                navPropBinding.setPath(ES_BENEFICIARIES_NAME); // the path from entity type to navigation property
                 navPropBindingList.add(navPropBinding);
                 entitySet.setNavigationPropertyBindings(navPropBindingList);
 
@@ -149,7 +149,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
                 // navigation
                 CsdlNavigationPropertyBinding navPropBinding = new CsdlNavigationPropertyBinding();
                 navPropBinding.setTarget(ES_CLAIMS_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath("Claim"); // the path from entity type to navigation property
+                navPropBinding.setPath(ET_CLAIM_NAME); // the path from entity type to navigation property
                 List<CsdlNavigationPropertyBinding> navPropBindingList = new ArrayList<CsdlNavigationPropertyBinding>();
                 navPropBindingList.add(navPropBinding);
                 entitySet.setNavigationPropertyBindings(navPropBindingList);
@@ -235,6 +235,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         CsdlProperty totalCostAmount = new CsdlProperty().setName(Constants.TOTAL_COST_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
         CsdlProperty numberOfUnits = new CsdlProperty().setName(Constants.NUMBER_OF_UNITS).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
         CsdlProperty active = new CsdlProperty().setName(Constants.POLICY_ACTIVE).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
+        CsdlProperty productId = new CsdlProperty().setName(Constants.POLICY_PRODUCT_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlNavigationProperty product = new CsdlNavigationProperty().setName(Constants.PRODUCT).setType(ET_PRODUCT_FQN).setNullable(false);
         CsdlNavigationProperty claims = new CsdlNavigationProperty().setName(Constants.CLAIMS).setType(ET_CLAIM_FQN).setCollection(true).setPartner(Constants.POLICY);
 
@@ -245,7 +246,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
         entityType.setName(ET_POLICY_NAME);
-        entityType.setProperties(Arrays.asList(policyId, policyStartDate, policyEndDate, policyHolderId, totalCostAmount, numberOfUnits, active));
+        entityType.setProperties(Arrays.asList(policyId, policyStartDate, policyEndDate, policyHolderId, totalCostAmount, numberOfUnits, active, productId));
         entityType.setNavigationProperties(Arrays.asList(product,claims));
         entityType.setKey(Collections.singletonList(propertyRef));
 
@@ -263,6 +264,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         CsdlProperty claimReason = new CsdlProperty().setName(Constants.CLAIM_REASON).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty approved = new CsdlProperty().setName(Constants.CLAIM_APPROVED).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
         CsdlProperty claimAmount = new CsdlProperty().setName(Constants.CLAIM_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+        CsdlProperty policyId = new CsdlProperty().setName(Constants.CLAIM_POLICY_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlNavigationProperty policy = new CsdlNavigationProperty().setName(Constants.POLICY).setType(ET_POLICY_FQN).setNullable(false).setPartner(Constants.CLAIMS);
         CsdlNavigationProperty beneficiaries = new CsdlNavigationProperty().setName(Constants.BENEFICIARIES).setType(ET_BENEFICIARY_FQN).setCollection(true).setPartner(Constants.CLAIM);
 
@@ -273,7 +275,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
         entityType.setName(ET_CLAIM_NAME);
-        entityType.setProperties(Arrays.asList(claimId, claimDate, claimReason, approved, claimAmount));
+        entityType.setProperties(Arrays.asList(claimId, claimDate, claimReason, approved, claimAmount, policyId));
         entityType.setNavigationProperties(Arrays.asList(policy, beneficiaries));
         entityType.setKey(Collections.singletonList(propertyRef));
 
@@ -286,6 +288,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         CsdlProperty beneficiaryPercent = new CsdlProperty().setName(Constants.BENEFICIARY_PERCENT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
         CsdlProperty beneficiaryAmount = new CsdlProperty().setName(Constants.BENEFICIARY_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
         CsdlProperty contactIdentifierId = new CsdlProperty().setName(Constants.CONTACT_IDENTIFIER).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty claimId = new CsdlProperty().setName(Constants.BENEFICIARY_CLAIM_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlNavigationProperty claim = new CsdlNavigationProperty().setName(Constants.CLAIM).setType(ET_CLAIM_FQN).setNullable(false).setPartner(Constants.BENEFICIARIES);
 
         // create CsdlPropertyRef for Key element
@@ -295,7 +298,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
         entityType.setName(ET_BENEFICIARY_NAME);
-        entityType.setProperties(Arrays.asList(beneficiaryId, beneficiaryPercent, beneficiaryAmount, contactIdentifierId));
+        entityType.setProperties(Arrays.asList(beneficiaryId, beneficiaryPercent, beneficiaryAmount, contactIdentifierId,claimId));
         entityType.setNavigationProperties(Arrays.asList(claim));
         entityType.setKey(Collections.singletonList(propertyRef));
 

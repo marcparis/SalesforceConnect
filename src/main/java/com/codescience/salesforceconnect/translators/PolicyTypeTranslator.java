@@ -34,6 +34,7 @@ public class PolicyTypeTranslator extends ODataTypeTranslator {
             entity.addProperty(new Property(null, Constants.TOTAL_COST_AMOUNT, ValueType.PRIMITIVE, policy.getTotalCost().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
         }
         entity.addProperty(new Property(null, "Active", ValueType.PRIMITIVE, policy.isActive()));
+        entity.addProperty(new Property(null, "ProductId", ValueType.PRIMITIVE, policy.getProduct().getId()));
         entity.setType(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString());
         entity.setId(createId(entity, "Id"));
         return entity;

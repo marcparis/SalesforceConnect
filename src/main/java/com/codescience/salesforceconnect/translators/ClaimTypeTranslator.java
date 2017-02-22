@@ -32,6 +32,7 @@ public class ClaimTypeTranslator extends ODataTypeTranslator {
         if (claim.getClaimAmount() != null) {
             entity.addProperty(new Property(null, Constants.CLAIM_AMOUNT, ValueType.PRIMITIVE, claim.getClaimAmount().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
         }
+        entity.addProperty(new Property(null, Constants.CLAIM_POLICY_ID, ValueType.PRIMITIVE, claim.getPolicy().getId()));
         entity.setType(OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString());
         entity.setId(createId(entity, Constants.CLAIM_ID));
         return entity;

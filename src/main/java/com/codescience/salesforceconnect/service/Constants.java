@@ -33,6 +33,8 @@ public class Constants {
 
     public static final String PRODUCT = "Product";
 
+    public static final String POLICY_PRODUCT_ID = "ProductId";
+
     // CLAIM PARAMETER CONSTANTS
     public static final String CLAIM_ID = "Id";
 
@@ -48,6 +50,8 @@ public class Constants {
 
     public static final String CLAIMS = "Claims";
 
+    public static final String CLAIM_POLICY_ID = "PolicyId";
+
     // BENEFICIARY PARAMETER CONSTANTS
 
     public static final String BENEFICIARY_ID = "Id";
@@ -61,4 +65,6 @@ public class Constants {
     public static final String CLAIM = "Claim";
 
     public static final String BENEFICIARIES = "Beneficiaries";
+
+    public static final String BENEFICIARY_CLAIM_ID = "ClaimId";
 }
