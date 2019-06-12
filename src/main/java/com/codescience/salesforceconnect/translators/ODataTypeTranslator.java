@@ -1,5 +1,6 @@
 package com.codescience.salesforceconnect.translators;
 
+import com.codescience.salesforceconnect.data.Storage;
 import com.codescience.salesforceconnect.entities.BaseEntity;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
@@ -12,14 +13,29 @@ import java.net.URISyntaxException;
  * Base Class for the Various Type Translators. Each Translator implementation will convert a Java POJO to an Olingo Entity
  * The base class contains common methods used by all subclasses
  */
-public abstract class ODataTypeTranslator {
+public abstract class ODataTypeTranslator<T extends BaseEntity> {
 
     /**
      * Base abstract method to translate a BaseEntity object to an Olingo Entity. This must be implemented by the subclasses
      * @param object Subclass of BaseEntity
      * @return Olingo entity
      */
-    public abstract Entity translate(BaseEntity object);
+    public abstract Entity translate(T object);
+
+    /**
+     * Base abstract method to translate an Olingo Entity object to a BaseEntity Object. This must be implemented by the subclasses
+     * @param entity Olingo entity
+     * @param storage Storage implementation
+     * @param merge boolean if true then nulls won't overwrite non nulls
+     * @return Subclass of BaseEntity
+     */
+    public abstract T translate(Entity entity, Storage storage, boolean merge);
+
+    /**
+     * Each translator will return the appropriate Entity Set name - abstract method to be overriden
+     * @return String that is the entity set name
+     */
+    public abstract String getEntitySetName();
 
     /**
      * Overloaded method calls createId with a null navigationName
@@ -54,8 +70,26 @@ public abstract class ODataTypeTranslator {
     }
 
     /**
-     * Each translator will return the appropriate Entity Set name - abstract method to be overriden
-     * @return String that is the entity set name
+     * Method used to extract a value from a entity property. It will check for null values
+     * @param existingValue Existing value that may be overwittent
+     * @param prop source property
+     * @param merge If true then don't replace a non null value with a null. Otherwise overwrite
+     * @return Object representing the parameter's value
      */
-    public abstract String getEntitySetName();
+    protected Object extractValue(Object existingValue, Property prop, boolean merge) {
+        if (!merge) {
+            return prop == null ? null : prop.getValue();
+        } else {
+            if (prop == null) {
+                return existingValue;
+            } else {
+                Object value = prop.getValue();
+                if (value == null) {
+                    return existingValue;
+                } else {
+                    return value;
+                }
+            }
+        }
+    }
 }

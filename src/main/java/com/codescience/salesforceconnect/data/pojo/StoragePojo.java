@@ -1,22 +1,27 @@
-package com.codescience.salesforceconnect.data;
+package com.codescience.salesforceconnect.data.pojo;
 
+import com.codescience.salesforceconnect.data.BaseDAO;
+import com.codescience.salesforceconnect.data.BeneficiaryDAO;
+import com.codescience.salesforceconnect.data.Storage;
+import com.codescience.salesforceconnect.data.pojo.ObjectFactory;
 import com.codescience.salesforceconnect.entities.*;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 import com.codescience.salesforceconnect.translators.ODataTypeTranslator;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
+import org.apache.olingo.commons.api.data.Property;
+import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
+import org.apache.olingo.commons.api.ex.ODataRuntimeException;
+import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
 import org.apache.olingo.server.api.uri.queryoption.FilterOption;
-import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
-import org.apache.olingo.server.api.uri.queryoption.expression.ExpressionVisitor;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,160 +31,7 @@ import java.util.regex.Pattern;
  */
 public class StoragePojo implements Storage {
     private Map<String, ODataTypeTranslator> typeTranslators = new HashMap<String, ODataTypeTranslator>();
-    private Map<String, Map<String, BaseEntity>> objects = new HashMap <String, Map<String, BaseEntity>> ();
-
-    public StoragePojo() {
-        initializeData();
-    }
-
-    /**
-     * Method used to initialize default pojos as the entity model
-     */
-    private void initializeData() {
-        Map <String, BaseEntity> mapOfProducts = new TreeMap<String, BaseEntity>();
-        objects.put(OdataEdmProvider.ET_PRODUCT_FQN.getFullQualifiedNameAsString(), mapOfProducts);
-
-        Product prod = new Product();
-        prod.setActive(true);
-        prod.setCostPerUnit(new BigDecimal(100));
-        prod.setId("1000");
-        prod.setProductName("Long Term Disability");
-        prod.setProductType("Disability");
-        mapOfProducts.put(prod.getId(), prod);
-
-        Product prod2 = new Product();
-        prod2.setActive(true);
-        prod2.setCostPerUnit(new BigDecimal(150));
-        prod2.setId("1001");
-        prod2.setProductName("Short Term Disability");
-        prod2.setProductType("Disability");
-        mapOfProducts.put(prod2.getId(), prod2);
-
-        Product prod3 = new Product();
-        prod3.setActive(false);
-        prod3.setCostPerUnit(new BigDecimal(200));
-        prod3.setId("1002");
-        prod3.setProductName("Umbrella Policy");
-        prod3.setProductType("Liability");
-        mapOfProducts.put(prod3.getId(), prod3);
-
-        Product prod4 = new Product();
-        prod4.setActive(true);
-        prod4.setCostPerUnit(new BigDecimal(250));
-        prod4.setId("1003");
-        prod4.setProductName("Umbrella Policy");
-        prod4.setProductType("Liability");
-        mapOfProducts.put(prod4.getId(), prod4);
-
-        Product prod5 = new Product();
-        prod5.setActive(true);
-        prod5.setCostPerUnit(new BigDecimal(300));
-        prod5.setId("1004");
-        prod5.setProductName("Life");
-        prod5.setProductType("Life");
-        mapOfProducts.put(prod5.getId(), prod5);
-
-        Product prod6 = new Product();
-        prod6.setActive(true);
-        prod6.setCostPerUnit(new BigDecimal(350));
-        prod6.setId("1005");
-        prod6.setProductName("Accidental Death");
-        prod6.setProductType("Life");
-        mapOfProducts.put(prod6.getId(), prod6);
-
-        Map <String, BaseEntity> mapOfPolicies = new TreeMap<String, BaseEntity>();
-        objects.put(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString(), mapOfPolicies);
-
-
-        Calendar cal = Calendar.getInstance();
-        cal.set(2010,Calendar.APRIL, 10);
-
-        Policy policy = new Policy();
-        policy.setId("2000");
-        policy.setNumberOfUnits(100);
-        policy.setPolicyHolderId("10000");
-        policy.setProduct(prod);
-        policy.setPolicyStartDate(cal.getTime());
-        mapOfPolicies.put(policy.getId(), policy);
-
-        Policy policy2 = new Policy();
-        policy2.setId("2001");
-        policy2.setNumberOfUnits(200);
-        policy2.setPolicyHolderId("10000");
-        policy2.setProduct(prod3);
-        cal.set(2011, Calendar.JUNE, 20);
-        policy2.setPolicyStartDate(cal.getTime());
-        mapOfPolicies.put(policy2.getId(), policy2);
-
-        cal.set(2014,Calendar.DECEMBER, 5);
-        policy2.setPolicyEndDate(cal.getTime());
-
-        Policy policy3 = new Policy();
-        policy3.setId("2002");
-        policy3.setNumberOfUnits(300);
-        policy3.setPolicyHolderId("10001");
-        policy3.setProduct(prod4);
-        cal.set(2011, Calendar.JUNE, 20);
-        policy3.setPolicyStartDate(cal.getTime());
-        mapOfPolicies.put(policy3.getId(), policy3);
-
-        Map <String, BaseEntity> mapOfClaims = new TreeMap<String, BaseEntity>();
-        objects.put(OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString(), mapOfClaims);
-
-        cal.set( 2016, Calendar.JULY, 28);
-        Claim claim = new Claim();
-        claim.setId("3000");
-        claim.setApproved(true);
-        claim.setClaimAmount(new BigDecimal(10000));
-        claim.setClaimDate(cal.getTime());
-        claim.setClaimReason("Injury");
-        policy.addClaim(claim);
-        mapOfClaims.put(claim.getId(), claim);
-
-        cal.set( 2009, Calendar.MARCH, 4);
-        Claim claim2 = new Claim();
-        claim2.setId("3001");
-        claim2.setApproved(false);
-        claim2.setClaimAmount(new BigDecimal(25000));
-        claim2.setClaimDate(cal.getTime());
-        claim2.setClaimReason("Accident");
-        policy.addClaim(claim2);
-        mapOfClaims.put(claim2.getId(), claim2);
-
-        cal.set( 2012, Calendar.AUGUST, 12);
-        Claim claim3 = new Claim();
-        claim3.setId("3002");
-        claim3.setApproved(false);
-        claim3.setClaimAmount(new BigDecimal(25000));
-        claim3.setClaimDate(cal.getTime());
-        claim3.setClaimReason("Lawsuit");
-        policy2.addClaim(claim3);
-        mapOfClaims.put(claim3.getId(), claim3);
-
-        Map <String, BaseEntity> mapOfBeneficiaries = new TreeMap<String, BaseEntity>();
-        objects.put(OdataEdmProvider.ET_BENEFICIARY_FQN.getFullQualifiedNameAsString(), mapOfBeneficiaries);
-
-        Beneficiary beneficiary = new Beneficiary();
-        beneficiary.setId("4000");
-        beneficiary.setBeneficiaryPercent(new BigDecimal(100));
-        beneficiary.setContactIdentifierId("20000");
-        claim.addBeneficiary(beneficiary);
-        mapOfBeneficiaries.put(beneficiary.getId(), beneficiary);
-
-        Beneficiary beneficiary2 = new Beneficiary();
-        beneficiary2.setId("4001");
-        beneficiary2.setBeneficiaryPercent(new BigDecimal(75));
-        beneficiary2.setContactIdentifierId("20001");
-        claim2.addBeneficiary(beneficiary2);
-        mapOfBeneficiaries.put(beneficiary2.getId(), beneficiary2);
-
-        Beneficiary beneficiary3 = new Beneficiary();
-        beneficiary3.setId("4002");
-        beneficiary3.setBeneficiaryPercent(new BigDecimal(25));
-        beneficiary3.setContactIdentifierId("20002");
-        claim2.addBeneficiary(beneficiary3);
-        mapOfBeneficiaries.put(beneficiary3.getId(), beneficiary3);
-    }
+    private Map<String, BaseDAO> dataAccessObjects = new HashMap<String, BaseDAO>();
 
     /**
      * Method reads the collection of objects based on the type passed in
@@ -225,29 +77,31 @@ public class StoragePojo implements Storage {
                 id = m.group();
             }
         }
+
+        ObjectFactory objectFactory = new ObjectFactory();
         // Find the object with the key
-        for (BaseEntity baseEntity : objects.get(objectType).values()) {
+        for (BaseEntity baseEntity : objectFactory.getEntities(objectType).values()) {
             if (id == null) {
                 entitySet.getEntities().add(odtt.translate(baseEntity));
             }
-            else if (primaryKey && baseEntity.getId().equalsIgnoreCase(id)) {
+            else if (primaryKey && baseEntity.getRecordId().equalsIgnoreCase(id)) {
                 entitySet.getEntities().add(odtt.translate(baseEntity));
             }
             else if (claimId) {
                 Beneficiary ben = (Beneficiary) baseEntity;
-                if (ben.getClaim().getId().equalsIgnoreCase(id)) {
+                if (ben.getClaim().getRecordId().equalsIgnoreCase(id)) {
                     entitySet.getEntities().add(odtt.translate(baseEntity));
                 }
             }
             else if (policyId) {
                 Claim claim = (Claim) baseEntity;
-                if (claim.getPolicy().getId().equalsIgnoreCase(id)) {
+                if (claim.getPolicy().getRecordId().equalsIgnoreCase(id)) {
                     entitySet.getEntities().add(odtt.translate(baseEntity));
                 }
             }
             else if (productId) {
                 Policy pol = (Policy) baseEntity;
-                if (pol.getProduct().getId().equalsIgnoreCase(id)) {
+                if (pol.getProduct().getRecordId().equalsIgnoreCase(id)) {
                     entitySet.getEntities().add(odtt.translate(baseEntity));
                 }
             }
@@ -279,13 +133,54 @@ public class StoragePojo implements Storage {
         ODataTypeTranslator odtt = getTypeTranslators().get(objectType);
 
         // Find the object with the key
-        return odtt.translate(objects.get(objectType).get(keyValue));
+        return odtt.translate(dataAccessObjects.get(objectType).findByRecordId(keyValue));
+    }
+
+    /**
+     * Method creates a single Entity for the EntitySet.
+     *
+     * @param edmEntitySet EDMEntitySet for the type to return
+     * @param entity Entity to Create
+     * @return Entity created
+     */
+    @Override
+    public Entity createEntityData(EdmEntitySet edmEntitySet, Entity entity) {
+        EdmEntityType edmEntityType = edmEntitySet.getEntityType();
+
+        return createEntity(edmEntityType, entity);
+    }
+
+    /**
+     * Method retuns a single Entity for the EntitySet. It filters based on the keyParams
+     *
+     * @param edmEntitySet EDMEntitySet for the type to return
+     * @param keyParams    List of key parameters to find the record
+     * @param entity  Entity record being update
+     * @param method Http Method being called
+     * @return Entity for the key params passed in updated
+     */
+    @Override
+    public Entity updateEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams, Entity entity, HttpMethod method) {
+        return updateEntity( edmEntitySet.getEntityType(), keyParams, entity, method);
+    }
+
+    /**
+     * Method deletes a single Entity for the EntitySet. It filters based on the keyParams
+     *
+     * @param edmEntitySet EDMEntitySet for the type to return
+     * @param keyParams    List of key parameters to find the record
+     * @return Deleted Entity for the key params passed in
+     */
+    @Override
+    public Entity deleteEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams) {
+        return null;
     }
 
     /**
      * Method returns the TypeTranslators Map.
      * @return TypeTranslator map that contains type translators for each object
      */
+    @Override
     public Map<String, ODataTypeTranslator> getTypeTranslators() {
         return typeTranslators;
     }
@@ -294,9 +189,24 @@ public class StoragePojo implements Storage {
      * Method sets the TypeTranslators Map
      * @param typeTranslators TypeTranslator Map that contains type translators for each object
      */
+    @Override
     public void setTypeTranslators(Map<String, ODataTypeTranslator> typeTranslators) {
         this.typeTranslators = typeTranslators;
     }
+
+    /**
+     * Method returns a Map of BaseDAO implementations
+     * @return DAO map that contains the DAO implementations for each object
+     */
+    @Override
+    public Map<String, BaseDAO> getDataAccessObjects() { return dataAccessObjects; }
+
+    /**
+     * Method sets the Map of BaseDAO implementations
+     * @param dataAccessObjects DAO map that contains the DAO implementations for each object
+     */
+    @Override
+    public void setDataAccessObjects(Map<String, BaseDAO> dataAccessObjects) { this .dataAccessObjects = dataAccessObjects;}
 
     /**
      * Method takes a source entity object and will return the related collection of targetentity type objects specified
@@ -305,7 +215,7 @@ public class StoragePojo implements Storage {
      * @return EntityCollection populated with 0 or more TargetEntityType objects
      */
     public EntityCollection getRelatedEntityCollection(Entity sourceEntity, EdmEntityType targetEntityType) {
-        Map<String, BaseEntity> entities = objects.get(sourceEntity.getType());
+        Map<String, BaseEntity> entities = dataAccessObjects.get(sourceEntity.getType()).findAll();
         BaseEntity ent = entities.get(parseId(sourceEntity.getId()));
         ODataTypeTranslator odtt = getTypeTranslators().get(targetEntityType.getFullQualifiedName().getFullQualifiedNameAsString());
         EntityCollection ec = new EntityCollection();
@@ -344,7 +254,7 @@ public class StoragePojo implements Storage {
      * @return Entity of target type that matches the entity.
      */
     public Entity getRelatedEntity(Entity sourceEntity, EdmEntityType targetEntityType, List<UriParameter> keyPredicates) {
-        Map<String, BaseEntity> entities = objects.get(sourceEntity.getType());
+        Map<String, BaseEntity> entities = dataAccessObjects.get(sourceEntity.getType()).findAll();
         BaseEntity ent = entities.get(parseId(sourceEntity.getId()));
         ODataTypeTranslator odtt = getTypeTranslators().get(targetEntityType.getFullQualifiedName().getFullQualifiedNameAsString());
 
@@ -365,7 +275,7 @@ public class StoragePojo implements Storage {
                 String targetEntityId = getPrimaryKeyFromParam("Id", keyPredicates);
 
                 for (Beneficiary b : claim.getBeneficiaries()) {
-                    if ((targetEntityId == null) || (targetEntityId.equals(b.getId()))) {
+                    if ((targetEntityId == null) || (targetEntityId.equals(b.getRecordId()))) {
                         returnEntity = odtt.translate(b);
                         break;
                     }
@@ -380,7 +290,7 @@ public class StoragePojo implements Storage {
                 String targetEntityId = getPrimaryKeyFromParam("Id", keyPredicates);
 
                 for (Claim c : pol.getClaims()) {
-                    if ((targetEntityId == null) || (targetEntityId.equals(c.getId()))) {
+                    if ((targetEntityId == null) || (targetEntityId.equals(c.getRecordId()))) {
                         returnEntity = odtt.translate(c);
                         break;
                     }
@@ -430,6 +340,30 @@ public class StoragePojo implements Storage {
         return param;
     }
 
+    private Entity createEntity(EdmEntityType edmEntityType, Entity entity) {
+        FullQualifiedName fqn = edmEntityType.getFullQualifiedName();
+        ODataTypeTranslator odtt = this.getTypeTranslators().get(fqn);
+        BaseEntity pojo = odtt.translate(entity, this, false);
+        pojo = dataAccessObjects.get(fqn.getFullQualifiedNameAsString()).insert(pojo);
+
+        Property idProperty = entity.getProperty("ID");
+        if (idProperty != null) {
+            idProperty.setValue(ValueType.PRIMITIVE, pojo.getRecordId());
+        } else {
+            entity.getProperties().add(new Property(null, "ID", ValueType.PRIMITIVE, pojo.getRecordId()));
+        }
+        entity.setId(createId(OdataEdmProvider.ES_POLICIES_NAME, pojo.getRecordId()));
+        return entity;
+    }
+
+    private Entity updateEntity(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity entity, HttpMethod httpMethod) {
+        FullQualifiedName fqn = edmEntityType.getFullQualifiedName();
+        ODataTypeTranslator odtt = this.getTypeTranslators().get(fqn);
+        BaseEntity pojo = odtt.translate(entity, this, true);
+        pojo = dataAccessObjects.get(fqn.getFullQualifiedNameAsString()).update(pojo);
+        return odtt.translate(pojo);
+    }
+
     /**
      * Method used to extract the Primary key from the URI passed in (ex Policy('1') will return 1)
      * @param uri Uri for the object ex Product('1')
@@ -444,6 +378,20 @@ public class StoragePojo implements Storage {
         }
         else {
             return null;
+        }
+    }
+
+    /**
+     * Method used to create an ID as a URI
+     * @param entitySetName Entity Set for the ID
+     * @param id Unique Identifier for the record
+     * @return URI for the ID
+     */
+    private URI createId(String entitySetName, Object id) {
+        try {
+            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
+        } catch (URISyntaxException e) {
+            throw new ODataRuntimeException("Unable to create id for entity: " + entitySetName, e);
         }
     }
 }

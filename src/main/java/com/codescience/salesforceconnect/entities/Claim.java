@@ -192,4 +192,15 @@ public class Claim extends BaseEntity {
                 ", claimAmount=" + claimAmount +
                 "} " + super.toString();
     }
+
+    /**
+     * Abstract method will merge the entity passed in and
+     *
+     * @param baseEntity  Source Entity to merge
+     * @param ignoreNulls if true don't overwrite the target if the source is null
+     */
+    @Override
+    public void merge(BaseEntity baseEntity, boolean ignoreNulls) {
+        Claim source = (Claim) baseEntity;
+    }
 }

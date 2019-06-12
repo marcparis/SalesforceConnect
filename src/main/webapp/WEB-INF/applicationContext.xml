@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="storage" class="com.codescience.salesforceconnect.data.StoragePojo">
+    <bean id="storage" class="com.codescience.salesforceconnect.data.pojo.StoragePojo">
         <property name="typeTranslators">
             <map>
                 <entry key="OData.InsuranceSystem.Product">
@@ -15,6 +15,22 @@
                 </entry>
                 <entry key="OData.InsuranceSystem.Beneficiary">
                     <bean class="com.codescience.salesforceconnect.translators.BeneficiaryTypeTranslator"/>
+                </entry>
+            </map>
+        </property>
+        <property name="dataAccessObjects">
+            <map>
+                <entry key="OData.InsuranceSystem.Product">
+                    <bean class="com.codescience.salesforceconnect.data.pojo.ProductDAOPojo"/>
+                </entry>
+                <entry key="OData.InsuranceSystem.Policy">
+                    <bean class="com.codescience.salesforceconnect.data.pojo.PolicyDAOPojo"/>
+                </entry>
+                <entry key="OData.InsuranceSystem.Claim">
+                    <bean class="com.codescience.salesforceconnect.data.pojo.ClaimDAOPojo"/>
+                </entry>
+                <entry key="OData.InsuranceSystem.Beneficiary">
+                    <bean class="com.codescience.salesforceconnect.data.pojo.BeneficiaryDAOPojo"/>
                 </entry>
             </map>
         </property>

@@ -6,7 +6,7 @@ package com.codescience.salesforceconnect.service;
 public class Constants {
 
     // PRODUCT PARAMETER CONSTANTS
-    public static final String PRODUCT_ID = "Id";
+    public static final String PRODUCT_ID = "RecordId";
 
     public static final String PRODUCT_NAME = "ProductName";
 
@@ -17,7 +17,7 @@ public class Constants {
     public static final String PRODUCT_ACTIVE = "Active";
 
     // POLICY PARAMETER CONSTANTS
-    public static final String POLICY_ID = "Id";
+    public static final String POLICY_ID = "RecordId";
 
     public static final String POLICY_START_DATE = "PolicyStartDate";
 
@@ -36,7 +36,7 @@ public class Constants {
     public static final String POLICY_PRODUCT_ID = "ProductId";
 
     // CLAIM PARAMETER CONSTANTS
-    public static final String CLAIM_ID = "Id";
+    public static final String CLAIM_ID = "RecordId";
 
     public static final String CLAIM_DATE = "ClaimDate";
 
@@ -54,7 +54,7 @@ public class Constants {
 
     // BENEFICIARY PARAMETER CONSTANTS
 
-    public static final String BENEFICIARY_ID = "Id";
+    public static final String BENEFICIARY_ID = "RecordId";
 
     public static final String BENEFICIARY_PERCENT = "BeneficiaryPercent";
 

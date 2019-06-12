@@ -1,5 +1,6 @@
 package com.codescience.salesforceconnect.translators;
 
+import com.codescience.salesforceconnect.data.Storage;
 import com.codescience.salesforceconnect.entities.BaseEntity;
 import com.codescience.salesforceconnect.entities.Product;
 import com.codescience.salesforceconnect.service.Constants;
@@ -14,18 +15,17 @@ import java.math.BigDecimal;
  * Subclass of ODataTypeTranslator to handle Product Translation from Pojo Produc t object to Olingo Entity Object.
  * This does not do a &quot;Deep Clone&quot;
  */
-public class ProductTypeTranslator extends ODataTypeTranslator {
+public class ProductTypeTranslator extends ODataTypeTranslator<Product> {
 
     /**
-     * Implementation method to translate the BaseEntity inmplementation (Product) to an Odata Entity object
-     * @param object BaseEntity implementation (Product)
+     * Implementation method to translate the BaseEntity implementation (Product) to an Olingo Entity object
+     * @param product BaseEntity implementation (Product)
      * @return Olingo entity for the Product
      */
-    public Entity translate(BaseEntity object) {
-        Product product = (Product) object;
+    public Entity translate(Product product) {
         Entity entity = new Entity();
 
-        entity.addProperty(new Property(null, Constants.PRODUCT_ID, ValueType.PRIMITIVE, product.getId()));
+        entity.addProperty(new Property(null, Constants.PRODUCT_ID, ValueType.PRIMITIVE, product.getRecordId()));
         entity.addProperty(new Property(null, Constants.PRODUCT_NAME, ValueType.PRIMITIVE, product.getProductName()));
         entity.addProperty(new Property(null, Constants.PRODUCT_TYPE, ValueType.PRIMITIVE, product.getProductType()));
         if (product.getCostPerUnit() != null) {
@@ -35,6 +35,28 @@ public class ProductTypeTranslator extends ODataTypeTranslator {
         entity.setType(OdataEdmProvider.ET_PRODUCT_FQN.getFullQualifiedNameAsString());
         entity.setId(createId(entity, Constants.PRODUCT_ID));
         return entity;
+    }
+
+    /**
+     * Implementation method to translate the Olingo Entity object to the BaseEntity implementation (Product)
+     * @param entity Olingo entity
+     * @param storage Storage implementation
+     * @param merge boolean if true then nulls won't overwrite non nulls
+     * @return BaseEntity implementation (Product)
+     */
+    public Product translate(Entity entity, Storage storage, boolean merge) {
+        Product product = new Product();
+        Property prop = entity.getProperty(Constants.PRODUCT_ID);
+        product.setRecordId((String) prop.getValue());
+        prop = entity.getProperty(Constants.PRODUCT_NAME);
+        product.setProductName((String) prop.getValue());
+        prop = entity.getProperty(Constants.PRODUCT_TYPE);
+        product.setProductType((String) prop.getValue());
+        prop = entity.getProperty(Constants.COST_PER_UNIT_AMOUNT);
+        product.setCostPerUnit((BigDecimal) prop.getValue());
+        prop = entity.getProperty(Constants.PRODUCT_ACTIVE);
+        product.setActive((Boolean) prop.getValue());
+        return product;
     }
 
     /**

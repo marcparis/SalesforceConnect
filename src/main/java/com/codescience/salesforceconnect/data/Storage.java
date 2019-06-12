@@ -1,13 +1,17 @@
 package com.codescience.salesforceconnect.data;
 
+import com.codescience.salesforceconnect.entities.BaseEntity;
+import com.codescience.salesforceconnect.translators.ODataTypeTranslator;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
+import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Storage Interface defined methods to access data. Underlying implementation can handle
@@ -29,6 +33,30 @@ public interface Storage {
      * @return Entity for the key params passed in
      */
     Entity readEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams);
+
+    /**
+     * Method retuns a single Entity for the EntitySet. It fileters based on the keyParams
+     * @param edmEntitySet EDMEntitySet for the type to return
+     * @param entityToCreate Entity to Create
+     * @return Entity for the key params passed in
+     */
+    Entity createEntityData(EdmEntitySet edmEntitySet, Entity entityToCreate);
+
+    /**
+     * Method retuns a single Entity for the EntitySet. It fileters based on the keyParams
+     * @param edmEntitySet EDMEntitySet for the type to return
+     * @param keyParams List of key parameters to find the record
+     * @return Entity for the key params passed in
+     */
+    Entity updateEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams, Entity entity, HttpMethod method);
+
+    /**
+     * Method retuns a single Entity for the EntitySet. It fileters based on the keyParams
+     * @param edmEntitySet EDMEntitySet for the type to return
+     * @param keyParams List of key parameters to find the record
+     * @return Entity for the key params passed in
+     */
+    Entity deleteEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams);
 
     /**
      * Method returns the related entity collection for the source entity passed in. This allows
@@ -56,4 +84,28 @@ public interface Storage {
      * @return Entity that is related to the source entity
      */
     Entity getRelatedEntity(Entity entity, EdmEntityType relatedEntityType);
+
+    /**
+     * Method returns the TypeTranslators Map.
+     * @return TypeTranslator map that contains type translators for each object
+     */
+    public Map<String, ODataTypeTranslator> getTypeTranslators();
+
+    /**
+     * Method sets the TypeTranslators Map
+     * @param typeTranslators TypeTranslator Map that contains type translators for each object
+     */
+    public void setTypeTranslators(Map<String, ODataTypeTranslator> typeTranslators);
+
+    /**
+     * Method returns a Map of BaseDAO implementations
+     * @return DAO map that contains the DAO implementations for each object
+     */
+    public Map<String, BaseDAO> getDataAccessObjects();
+
+    /**
+     * Method sets the Map of BaseDAO implementations
+     * @param dataAccessObjects DAO map that contains the DAO implementations for each object
+     */
+    public void setDataAccessObjects(Map<String, BaseDAO> dataAccessObjects);
 }

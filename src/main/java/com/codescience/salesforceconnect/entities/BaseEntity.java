@@ -9,22 +9,22 @@ public abstract class BaseEntity implements Serializable, Comparable {
 
     static final long serialVersionUID = 1L;
 
-    private String id;
+    private String recordId;
 
     /**
-     * Method returns the Id (Primary Key) parameter.  All entities assumed to have Integer primary keys
+     * Method returns the Record Id (Primary Key) parameter.
      * @return String representing a primary key
      */
-    public String getId() {
-        return id;
+    public String getRecordId() {
+        return recordId;
     }
 
     /**
-     * Method sets the Id (Primary Key) parameter. All entities assumed to have Integer primary keys
-     * @param id String representing a primary key
+     * Method sets the Record Id (Primary Key) parameter.
+     * @param recordId String representing a primary key
      */
-    public void setId(String id) {
-        this.id = id;
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
     }
 
     @Override
@@ -34,18 +34,18 @@ public abstract class BaseEntity implements Serializable, Comparable {
 
         BaseEntity that = (BaseEntity) o;
 
-        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+        return getRecordId() != null ? getRecordId().equals(that.getRecordId()) : that.getRecordId() == null;
     }
 
     @Override
     public int hashCode() {
-        return getId() != null ? getId().hashCode() : 0;
+        return getRecordId() != null ? getRecordId().hashCode() : 0;
     }
 
     @Override
     public String toString() {
         return "BaseEntity{" +
-                "id=" + id +
+                "id=" + recordId +
                 '}';
     }
 
@@ -64,17 +64,39 @@ public abstract class BaseEntity implements Serializable, Comparable {
         }
         else if ((o != this) && (o instanceof BaseEntity)) {
             BaseEntity be = (BaseEntity) o;
-            if ((be.getId() == null) && (getId() == null)) {
+            if ((be.getRecordId() == null) && (getRecordId() == null)) {
                 returnValue = 0;
-            } else if (be.getId() == null) {
+            } else if (be.getRecordId() == null) {
                 returnValue = -1;
-            } else if (getId() == null) {
+            } else if (getRecordId() == null) {
                 returnValue = 1;
             } else {
-                returnValue = getId().compareTo(be.getId());
+                returnValue = getRecordId().compareTo(be.getRecordId());
             }
         }
 
         return returnValue;
+    }
+
+    /**
+     * Abstract method will merge the entity passed in and
+     * @param baseEntity Source Entity to merge
+     * @param ignoreNulls if true don't overwrite the target if the source is null
+     */
+    public abstract void merge(BaseEntity baseEntity, boolean ignoreNulls);
+
+    /**
+     * Method will return true if the value passed in is not null or the ignoreNulls is false
+     * @param value Value to set
+     * @param ignoreNulls if true then return false if the object passed in is null
+     * @return true if value should be set. False otherwise
+     */
+    protected boolean shouldSetValue(Object value, boolean ignoreNulls) {
+        // If there is a value then ignoreNulls is irrelevant
+        if (value != null) {
+            return true;
+        }
+        // value is null so set it only if ignoreNulls is false
+        return !ignoreNulls;
     }
 }

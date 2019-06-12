@@ -116,4 +116,27 @@ public class Product extends BaseEntity {
                 ", active=" + active +
                 "} " + super.toString();
     }
+
+    /**
+     * Abstract method will merge the entity passed in and
+     *
+     * @param baseEntity  Source Entity to merge
+     * @param ignoreNulls if true don't overwrite the target if the source is null
+     */
+    @Override
+    public void merge(BaseEntity baseEntity, boolean ignoreNulls) {
+        Product product = (Product) baseEntity;
+
+        setActive(product.active);
+
+        if (shouldSetValue(product.getCostPerUnit(),ignoreNulls)) {
+            setCostPerUnit(product.getCostPerUnit());
+        }
+        if (shouldSetValue(product.getProductName(),ignoreNulls)) {
+            setProductName(product.getProductName());
+        }
+        if (shouldSetValue(product.getProductType(),ignoreNulls)) {
+            setProductType(product.getProductType());
+        }
+    }
 }

@@ -110,4 +110,15 @@ public class Beneficiary extends BaseEntity {
                 ", contactIdentifierId=" + contactIdentifierId +
                 "} " + super.toString();
     }
+
+    /**
+     * Concrete method will merge the entity passed in and
+     *
+     * @param baseEntity  Source Entity to merge
+     * @param ignoreNulls if true don't overwrite the target if the source is null
+     */
+    @Override
+    public void merge(BaseEntity baseEntity, boolean ignoreNulls) {
+        Beneficiary source = (Beneficiary) baseEntity;
+    }
 }
