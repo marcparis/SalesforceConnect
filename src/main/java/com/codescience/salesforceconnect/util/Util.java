@@ -19,6 +19,12 @@ import java.util.Locale;
  */
 public class Util {
 
+    /**
+     * Method returns the EdmEntitySet given the uriInfo passed in
+     * @param uriInfo
+     * @return
+     * @throws ODataApplicationException
+     */
     public static EdmEntitySet getEdmEntitySet(UriInfoResource uriInfo) throws ODataApplicationException {
 
         List<UriResource> resourcePaths = uriInfo.getUriResourceParts();

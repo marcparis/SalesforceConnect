@@ -24,7 +24,8 @@ public interface BaseDAO<T extends BaseEntity> {
     public T findByRecordId(String recordId);
 
     /**
-     * Method inserts the record baseed in
+     * Method inserts the record based on the Entity passed in
+     *
      * @param entity Entity to persist
      * @return Entity persisted
      */

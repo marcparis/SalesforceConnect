@@ -226,6 +226,11 @@ public class OdataEntityProcessor implements EntityProcessor {
             throws ODataApplicationException {
         // 1. Retrieve the entity set which belongs to the requested entity
         List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
+
+        if ((resourcePaths == null) || (resourcePaths.size() == 0)) {
+            return;
+        }
+
         // Note: only in our example we can assume that the first segment is the EntitySet
         UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) resourcePaths.get(0);
         EdmEntitySet edmEntitySet = uriResourceEntitySet.getEntitySet();

@@ -1,10 +1,11 @@
 package com.codescience.salesforceconnect.data.pojo;
 
 import com.codescience.salesforceconnect.data.BaseDAO;
-import com.codescience.salesforceconnect.data.BeneficiaryDAO;
 import com.codescience.salesforceconnect.data.Storage;
-import com.codescience.salesforceconnect.data.pojo.ObjectFactory;
-import com.codescience.salesforceconnect.entities.*;
+import com.codescience.salesforceconnect.entities.BaseEntity;
+import com.codescience.salesforceconnect.entities.Beneficiary;
+import com.codescience.salesforceconnect.entities.Claim;
+import com.codescience.salesforceconnect.entities.Policy;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 import com.codescience.salesforceconnect.translators.ODataTypeTranslator;
 import org.apache.olingo.commons.api.data.Entity;
@@ -22,7 +23,9 @@ import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -173,6 +176,24 @@ public class StoragePojo implements Storage {
      */
     @Override
     public Entity deleteEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams) {
+        String recordId = null;
+
+        // Should only be one parameter
+        for (UriParameter uriParameter : keyParams) {
+            recordId = uriParameter.getText();
+            recordId = recordId == null ? null : recordId.replaceAll("\'", "");
+        }
+        FullQualifiedName fqn = edmEntitySet.getEntityType().getFullQualifiedName();
+        ODataTypeTranslator odtt = this.getTypeTranslators().get(fqn.getFullQualifiedNameAsString());
+        if (recordId != null) {
+            BaseDAO dao = dataAccessObjects.get(fqn.getFullQualifiedNameAsString());
+            if (dao != null) {
+                BaseEntity pojo = dao.delete(recordId);
+                if ((pojo != null) && (odtt != null)) {
+                    return odtt.translate(pojo);
+                }
+            }
+        }
         return null;
     }
 
@@ -340,11 +361,20 @@ public class StoragePojo implements Storage {
         return param;
     }
 
+    /**
+     * Method will translate the Entity into a Java Pojo object of subclass of BaseEntity. It will then
+     * insert it using the appropriate DAO for the entity type. It will then tranlate the result of the inserted
+     * record back as the returned entity
+     * @param edmEntityType Type of Entity being created
+     * @param entity Entity to create
+     * @return Created Entity
+     */
     private Entity createEntity(EdmEntityType edmEntityType, Entity entity) {
         FullQualifiedName fqn = edmEntityType.getFullQualifiedName();
-        ODataTypeTranslator odtt = this.getTypeTranslators().get(fqn);
+        ODataTypeTranslator odtt = this.getTypeTranslators().get(fqn.getFullQualifiedNameAsString());
         BaseEntity pojo = odtt.translate(entity, this, false);
         pojo = dataAccessObjects.get(fqn.getFullQualifiedNameAsString()).insert(pojo);
+        entity = odtt.translate(pojo);
 
         Property idProperty = entity.getProperty("ID");
         if (idProperty != null) {
@@ -358,7 +388,7 @@ public class StoragePojo implements Storage {
 
     private Entity updateEntity(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity entity, HttpMethod httpMethod) {
         FullQualifiedName fqn = edmEntityType.getFullQualifiedName();
-        ODataTypeTranslator odtt = this.getTypeTranslators().get(fqn);
+        ODataTypeTranslator odtt = this.getTypeTranslators().get(fqn.getFullQualifiedNameAsString());
         BaseEntity pojo = odtt.translate(entity, this, true);
         pojo = dataAccessObjects.get(fqn.getFullQualifiedNameAsString()).update(pojo);
         return odtt.translate(pojo);

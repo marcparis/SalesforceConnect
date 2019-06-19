@@ -6,6 +6,9 @@ import com.codescience.salesforceconnect.service.OdataEdmProvider;
 
 import java.util.Map;
 
+/**
+ * Implementation of the PolicyDAO interface for Simple in Memory Pojos
+ */
 public class PolicyDAOPojo implements PolicyDAO {
 
     private ObjectFactory factory = new ObjectFactory();

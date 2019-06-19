@@ -1,7 +1,6 @@
 package com.codescience.salesforceconnect.translators;
 
 import com.codescience.salesforceconnect.data.Storage;
-import com.codescience.salesforceconnect.entities.BaseEntity;
 import com.codescience.salesforceconnect.entities.Claim;
 import com.codescience.salesforceconnect.entities.Policy;
 import com.codescience.salesforceconnect.service.Constants;
@@ -50,20 +49,27 @@ public class ClaimTypeTranslator extends ODataTypeTranslator<Claim> {
     public Claim translate(Entity entity, Storage storage, boolean merge) {
         Claim claim = new Claim();
         Property prop = entity.getProperty(Constants.CLAIM_ID);
-        claim.setRecordId((String) prop.getValue());
-        prop = entity.getProperty(Constants.CLAIM_AMOUNT);
-        claim.setClaimAmount((BigDecimal) prop.getValue());
-        prop = entity.getProperty(Constants.CLAIM_APPROVED);
-        claim.setApproved((Boolean) prop.getValue());
-        prop = entity.getProperty(Constants.CLAIM_DATE);
-        claim.setClaimDate((Date) prop.getValue());
-        prop = entity.getProperty(Constants.CLAIM_REASON);
-        claim.setClaimReason((String) prop.getValue());
-        prop = entity.getProperty(Constants.CLAIM_POLICY_ID);
-        String claimId = prop == null ? null : (String) prop.getValue();
+        Claim existingClaim = getExistingEntity(storage.getDataAccessObjects().get(OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString()),Claim.class, prop);
 
-        if (claimId != null) {
-            claim.setPolicy((Policy) storage.getDataAccessObjects().get(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString()).findByRecordId((String) prop.getValue()));
+        claim.setRecordId(existingClaim.getRecordId());
+
+        prop = entity.getProperty(Constants.CLAIM_AMOUNT);
+        claim.setClaimAmount((BigDecimal) extractValue(existingClaim.getClaimAmount(), prop, merge));
+
+        prop = entity.getProperty(Constants.CLAIM_APPROVED);
+        claim.setApproved((Boolean) extractValue(existingClaim.isApproved(), prop, merge));
+
+        prop = entity.getProperty(Constants.CLAIM_DATE);
+        claim.setClaimDate((Date) extractValue(existingClaim.getClaimDate(), prop, merge));
+
+        prop = entity.getProperty(Constants.CLAIM_REASON);
+        claim.setClaimReason((String) extractValue(existingClaim.getClaimReason(), prop, merge));
+
+        prop = entity.getProperty(Constants.CLAIM_POLICY_ID);
+        String policyId = prop == null ? null : (String) prop.getValue();
+
+        if (policyId != null) {
+            claim.setPolicy((Policy) storage.getDataAccessObjects().get(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString()).findByRecordId(policyId));
         }
         return claim;
     }

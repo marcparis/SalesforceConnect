@@ -6,8 +6,12 @@ import com.codescience.salesforceconnect.service.OdataEdmProvider;
 
 import java.util.Map;
 
+/**
+ * Implementation of the ClaimDAO interface for Simple in Memory Pojos
+ */
 public class ClaimDAOPojo implements ClaimDAO {
 
+    // Reference to the object store
     private ObjectFactory factory = new ObjectFactory();
 
     /**
@@ -32,7 +36,7 @@ public class ClaimDAOPojo implements ClaimDAO {
     }
 
     /**
-     * Method inserts the record baseed in
+     * Method inserts the record based on the Entity passed in
      *
      * @param entity Entity to persist
      * @return Entity persisted

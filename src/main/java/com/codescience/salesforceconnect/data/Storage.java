@@ -1,6 +1,5 @@
 package com.codescience.salesforceconnect.data;
 
-import com.codescience.salesforceconnect.entities.BaseEntity;
 import com.codescience.salesforceconnect.translators.ODataTypeTranslator;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;

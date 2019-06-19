@@ -1,7 +1,6 @@
 package com.codescience.salesforceconnect.translators;
 
 import com.codescience.salesforceconnect.data.Storage;
-import com.codescience.salesforceconnect.entities.BaseEntity;
 import com.codescience.salesforceconnect.entities.Policy;
 import com.codescience.salesforceconnect.entities.Product;
 import com.codescience.salesforceconnect.service.Constants;
@@ -52,10 +51,13 @@ public class PolicyTypeTranslator extends ODataTypeTranslator<Policy> {
     public Policy translate(Entity entity, Storage storage, boolean merge) {
         Policy policy = new Policy();
         Property prop = entity.getProperty(Constants.POLICY_ID);
-        Policy existingPolicy  = (Policy) storage.getDataAccessObjects().get(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString()).findByRecordId((String) prop.getValue());
+        Policy existingPolicy = getExistingEntity(storage.getDataAccessObjects().get(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString()),Policy.class, prop);
+
+        policy.setRecordId(existingPolicy.getRecordId());
 
         prop = entity.getProperty(Constants.NUMBER_OF_UNITS);
         policy.setNumberOfUnits((Integer) extractValue(existingPolicy.getNumberOfUnits(), prop, merge));
+
         prop = entity.getProperty(Constants.POLICY_END_DATE);
         policy.setPolicyEndDate((Date) extractValue(existingPolicy.getPolicyEndDate(), prop, merge));
 

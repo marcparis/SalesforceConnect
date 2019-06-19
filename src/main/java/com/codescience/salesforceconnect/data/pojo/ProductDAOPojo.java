@@ -6,6 +6,9 @@ import com.codescience.salesforceconnect.service.OdataEdmProvider;
 
 import java.util.Map;
 
+/**
+ * Implementation of the ProductDAO interface for Simple in Memory Pojos
+ */
 public class ProductDAOPojo implements ProductDAO {
 
     private ObjectFactory factory = new ObjectFactory();

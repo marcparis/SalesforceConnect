@@ -1,7 +1,6 @@
 package com.codescience.salesforceconnect.translators;
 
 import com.codescience.salesforceconnect.data.Storage;
-import com.codescience.salesforceconnect.entities.BaseEntity;
 import com.codescience.salesforceconnect.entities.Product;
 import com.codescience.salesforceconnect.service.Constants;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
@@ -47,15 +46,21 @@ public class ProductTypeTranslator extends ODataTypeTranslator<Product> {
     public Product translate(Entity entity, Storage storage, boolean merge) {
         Product product = new Product();
         Property prop = entity.getProperty(Constants.PRODUCT_ID);
-        product.setRecordId((String) prop.getValue());
+        Product existingProduct = getExistingEntity(storage.getDataAccessObjects().get(OdataEdmProvider.ET_PRODUCT_FQN.getFullQualifiedNameAsString()),Product.class, prop);
+
+        product.setRecordId(existingProduct.getRecordId());
+
         prop = entity.getProperty(Constants.PRODUCT_NAME);
-        product.setProductName((String) prop.getValue());
+        product.setProductName((String) extractValue(existingProduct.getProductName(), prop, merge));
+
         prop = entity.getProperty(Constants.PRODUCT_TYPE);
-        product.setProductType((String) prop.getValue());
+        product.setProductType((String) extractValue(existingProduct.getProductType(), prop, merge));
+
         prop = entity.getProperty(Constants.COST_PER_UNIT_AMOUNT);
-        product.setCostPerUnit((BigDecimal) prop.getValue());
+        product.setCostPerUnit((BigDecimal) extractValue(existingProduct.getCostPerUnit(), prop, merge));
+
         prop = entity.getProperty(Constants.PRODUCT_ACTIVE);
-        product.setActive((Boolean) prop.getValue());
+        product.setActive((Boolean) extractValue(existingProduct.isActive(), prop, merge));
         return product;
     }
 

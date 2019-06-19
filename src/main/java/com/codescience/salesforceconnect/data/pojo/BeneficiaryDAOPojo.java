@@ -6,8 +6,12 @@ import com.codescience.salesforceconnect.service.OdataEdmProvider;
 
 import java.util.Map;
 
+/**
+ * Implementation of the BeneficiaryDAO interface for Simple in Memory Pojos
+ */
 public class BeneficiaryDAOPojo implements BeneficiaryDAO {
 
+    // Reference to the object store
     private ObjectFactory factory = new ObjectFactory();
 
     /**
@@ -32,7 +36,7 @@ public class BeneficiaryDAOPojo implements BeneficiaryDAO {
     }
 
     /**
-     * Method inserts the record baseed in
+     * Method inserts the record based on the Entity passed in
      *
      * @param entity Entity to persist
      * @return Entity persisted
@@ -47,7 +51,7 @@ public class BeneficiaryDAOPojo implements BeneficiaryDAO {
     }
 
     /**
-     * Method updates the record baseed in
+     * Method updates the record based on the Entity passed in
      *
      * @param entity Entity to persist
      * @return Entity persisted

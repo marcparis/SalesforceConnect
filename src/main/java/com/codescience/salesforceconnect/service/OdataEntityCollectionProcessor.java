@@ -47,6 +47,15 @@ public class OdataEntityCollectionProcessor implements EntityCollectionProcessor
         this.srvMetadata = serviceMetadata;
     }
 
+    /**
+     * Method used to read a collection of Entities
+     * @param request ODataRequest that contains the input data
+     * @param response ODataResponse returned to the client
+     * @param uriInfo UriInfo and path for the url
+     * @param responseFormat The content type passed int
+     * @throws ODataApplicationException Exception thrown in OData application processing
+     * @throws SerializerException Exception thrown if unable to serialize / deserialize an entity
+     */
     public void readEntityCollection(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType responseFormat) throws ODataApplicationException, SerializerException {
 
         EdmEntitySet responseEdmEntitySet = null;

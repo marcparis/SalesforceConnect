@@ -42,6 +42,10 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
     public static final String ES_BENEFICIARIES_NAME = "Beneficiaries";
 
 
+    /**
+     * Method returns the Schemas supported by the app
+     * @return List of CsdlSchemas
+     */
     @Override
     public List<CsdlSchema> getSchemas() {
 
@@ -68,6 +72,11 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
     }
 
 
+    /**
+     * Method returns a CsdlEntityType based on the name passed in
+     * @param entityTypeName Name of the CsdlTentityType
+     * @return CsdlEntityType
+     */
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
 
@@ -88,6 +97,12 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         return null;
     }
 
+    /**
+     * Method returns a CsdlEntitySet for the given container and entitySetName
+     * @param entityContainer FullQualifiedName for the entityContainer
+     * @param entitySetName Name of the entity set to be returned
+     * @return CsdlEntitySet found
+     */
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
 
@@ -161,6 +176,10 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         return null;
     }
 
+    /**
+     * Method returns the CsdlEntityContainer with the Entity Sets
+     * @return CsdlEntityContainer with the Entity Sets
+     */
     @Override
     public CsdlEntityContainer getEntityContainer() {
 
@@ -282,6 +301,10 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         return entityType;
     }
 
+    /**
+     * Method returns a CsdlEntityType for the Claim OData object
+     * @return CsdlEntityType
+     */
     private CsdlEntityType getBeneficiaryEntityType() {
         //create EntityType properties
         CsdlProperty beneficiaryId = new CsdlProperty().setName(Constants.BENEFICIARY_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());

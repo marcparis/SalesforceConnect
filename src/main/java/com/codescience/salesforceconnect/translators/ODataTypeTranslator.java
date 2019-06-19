@@ -1,13 +1,16 @@
 package com.codescience.salesforceconnect.translators;
 
+import com.codescience.salesforceconnect.data.BaseDAO;
 import com.codescience.salesforceconnect.data.Storage;
 import com.codescience.salesforceconnect.entities.BaseEntity;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 
 /**
  * Base Class for the Various Type Translators. Each Translator implementation will convert a Java POJO to an Olingo Entity
@@ -87,9 +90,39 @@ public abstract class ODataTypeTranslator<T extends BaseEntity> {
                 if (value == null) {
                     return existingValue;
                 } else {
+                    if (value instanceof Calendar) {
+                        Calendar cal = (Calendar) value;
+                        return cal.getTime();
+                    }
                     return value;
                 }
             }
         }
+    }
+
+    /**
+     * Method used to get an existing entity from the dao passed int using the Record Id property. It will return an empty
+     * instance of type T if existing record not found
+     * @param dao BaseDao implementation for type T
+     * @param clazz Class instance for Type T
+     * @param prop Property that contains the record id
+     * @return T instance of the entity
+     */
+    protected T getExistingEntity(BaseDAO<T> dao, Class<T> clazz, Property prop) {
+        T existing = null;
+
+        if ((prop != null) && (prop.getValue() != null)) {
+            existing = dao.findByRecordId((String) prop.getValue());
+        }
+
+        if (existing == null) {
+            try {
+                Constructor<T> constructor = clazz.getDeclaredConstructor();
+                existing = constructor.newInstance();
+            } catch (Exception e) {
+                // Error occured return null (no existing)
+            }
+        }
+        return existing;
     }
 }

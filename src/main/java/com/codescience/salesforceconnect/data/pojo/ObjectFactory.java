@@ -1,7 +1,6 @@
 package com.codescience.salesforceconnect.data.pojo;
 
 import com.codescience.salesforceconnect.entities.*;
-import com.codescience.salesforceconnect.service.Constants;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 
@@ -11,6 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * Factory object used by the PojoDAOs
+ */
 public class ObjectFactory {
 
     private static Map<String, Product> products;
@@ -85,7 +87,7 @@ public class ObjectFactory {
         products.put(prod6.getRecordId(), prod6);
 
         Calendar cal = Calendar.getInstance();
-        cal.set(2010,Calendar.APRIL, 10);
+        cal.set(2010,Calendar.APRIL, 10,0,0,0);
 
         Policy policy = new Policy();
         policy.setRecordId("2000");
@@ -100,11 +102,11 @@ public class ObjectFactory {
         policy2.setNumberOfUnits(200);
         policy2.setPolicyHolderId("10000");
         policy2.setProduct(prod3);
-        cal.set(2011, Calendar.JUNE, 20);
+        cal.set(2011, Calendar.JUNE, 20,0,0,0);
         policy2.setPolicyStartDate(cal.getTime());
         policies.put(policy2.getRecordId(), policy2);
 
-        cal.set(2014,Calendar.DECEMBER, 5);
+        cal.set(2014,Calendar.DECEMBER, 5,0,0,0);
         policy2.setPolicyEndDate(cal.getTime());
 
         Policy policy3 = new Policy();
@@ -112,11 +114,11 @@ public class ObjectFactory {
         policy3.setNumberOfUnits(300);
         policy3.setPolicyHolderId("10001");
         policy3.setProduct(prod4);
-        cal.set(2011, Calendar.JUNE, 20);
+        cal.set(2011, Calendar.JUNE, 20,0,0,0);
         policy3.setPolicyStartDate(cal.getTime());
         policies.put(policy3.getRecordId(), policy3);
 
-        cal.set( 2016, Calendar.JULY, 28);
+        cal.set( 2016, Calendar.JULY, 28,0,0,0);
         Claim claim = new Claim();
         claim.setRecordId("3000");
         claim.setApproved(true);
@@ -126,7 +128,7 @@ public class ObjectFactory {
         policy.addClaim(claim);
         claims.put(claim.getRecordId(), claim);
 
-        cal.set( 2009, Calendar.MARCH, 4);
+        cal.set( 2009, Calendar.MARCH, 4,0,0,0);
         Claim claim2 = new Claim();
         claim2.setRecordId("3001");
         claim2.setApproved(false);
@@ -136,7 +138,7 @@ public class ObjectFactory {
         policy.addClaim(claim2);
         claims.put(claim2.getRecordId(), claim2);
 
-        cal.set( 2012, Calendar.AUGUST, 12);
+        cal.set( 2012, Calendar.AUGUST, 12,0,0,0);
         Claim claim3 = new Claim();
         claim3.setRecordId("3002");
         claim3.setApproved(false);
@@ -200,6 +202,11 @@ public class ObjectFactory {
         return beneficiaries;
     }
 
+    /**
+     * Method returns a map of entities for the type passed in
+     * @param type Type of entity
+     * @return Map of BaseEntity implementations
+     */
     Map<String, BaseEntity> getEntities(String type) {
         Map<String, BaseEntity> map = new HashMap<String, BaseEntity>();
         if (OdataEdmProvider.ET_PRODUCT_FQN.getFullQualifiedNameAsString().equalsIgnoreCase(type)) {
@@ -225,7 +232,6 @@ public class ObjectFactory {
         return map;
     }
 
-
     /**
      * Method returns a new Id for the FullQualifiedName passed in. It will take the largest value and increment 1
      * @param fqn FullQualifiedName (Object type)
@@ -243,5 +249,4 @@ public class ObjectFactory {
 
         return Integer.toString(++maxValue);
     }
-
 }

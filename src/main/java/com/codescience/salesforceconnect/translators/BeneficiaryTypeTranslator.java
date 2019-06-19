@@ -48,16 +48,21 @@ public class BeneficiaryTypeTranslator extends ODataTypeTranslator<Beneficiary> 
     public Beneficiary translate(Entity entity, Storage storage, boolean merge) {
         Beneficiary beneficiary = new Beneficiary();
         Property prop = entity.getProperty(Constants.BENEFICIARY_ID);
-        beneficiary.setRecordId((String) prop.getValue());
+        Beneficiary existingBeneficiary = getExistingEntity(storage.getDataAccessObjects().get(OdataEdmProvider.ET_BENEFICIARY_FQN.getFullQualifiedNameAsString()),Beneficiary.class, prop);
+
+        beneficiary.setRecordId(existingBeneficiary.getRecordId());
+
         prop = entity.getProperty(Constants.BENEFICIARY_PERCENT);
-        beneficiary.setBeneficiaryPercent((BigDecimal) prop.getValue());
+        beneficiary.setBeneficiaryPercent((BigDecimal) extractValue(existingBeneficiary.getBeneficiaryPercent(), prop, merge));
+
         prop = entity.getProperty(Constants.CONTACT_IDENTIFIER);
-        beneficiary.setContactIdentifierId((String) prop.getValue());
+        beneficiary.setContactIdentifierId((String) extractValue(existingBeneficiary.getContactIdentifierId(), prop, merge));
+
         prop = entity.getProperty(Constants.BENEFICIARY_CLAIM_ID);
 
-        String benId = prop == null ? null : (String) prop.getValue();
-        if (benId != null) {
-            beneficiary.setClaim((Claim) storage.getDataAccessObjects().get(OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString()).findByRecordId(benId));
+        String claimId = prop == null ? null : (String) prop.getValue();
+        if (claimId != null) {
+            beneficiary.setClaim((Claim) storage.getDataAccessObjects().get(OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString()).findByRecordId(claimId));
         }
         return beneficiary;
     }
