@@ -1,7 +1,6 @@
 package com.codescience.salesforceconnect.data.pojo;
 
-import com.codescience.salesforceconnect.data.BaseDAO;
-import com.codescience.salesforceconnect.data.Storage;
+import com.codescience.salesforceconnect.data.*;
 import com.codescience.salesforceconnect.entities.BaseEntity;
 import com.codescience.salesforceconnect.entities.Beneficiary;
 import com.codescience.salesforceconnect.entities.Claim;
@@ -58,20 +57,23 @@ public class StoragePojo implements Storage {
         boolean claimId = false;
         boolean policyId = false;
         boolean productId = false;
+        boolean policyHolder = false;
+        boolean contactIdentifier = false;
 
         if (filterOption != null) {
             String value = filterOption.getText().toLowerCase();
             if (value.indexOf("claimid eq") > -1) {
                 claimId = true;
-            }
-            else if (value.indexOf("policyid eq") > -1) {
+            } else if (value.indexOf("policyid eq") > -1) {
                 policyId = true;
 
-            }
-            else if (value.indexOf("productid eq") > -1) {
+            } else if (value.indexOf("productid eq") > -1) {
                 productId = true;
-            }
-            else if (value.indexOf("id eq") > -1) {
+            } else if (value.indexOf("contactidentifierid eq") > -1) {
+                contactIdentifier = true;
+            } else if (value.indexOf("policyholderid eq") > -1) {
+                policyHolder = true;
+            } else if (value.indexOf("id eq") > -1) {
                 primaryKey = true;
             }
             Pattern p = Pattern.compile("-?\\d+");
@@ -82,31 +84,37 @@ public class StoragePojo implements Storage {
         }
 
         ObjectFactory objectFactory = new ObjectFactory();
+        BaseDAO baseDAO = dataAccessObjects.get(objectType);
+
         // Find the object with the key
-        for (BaseEntity baseEntity : objectFactory.getEntities(objectType).values()) {
-            if (id == null) {
-                entitySet.getEntities().add(odtt.translate(baseEntity));
-            }
-            else if (primaryKey && baseEntity.getRecordId().equalsIgnoreCase(id)) {
-                entitySet.getEntities().add(odtt.translate(baseEntity));
-            }
-            else if (claimId) {
-                Beneficiary ben = (Beneficiary) baseEntity;
-                if (ben.getClaim().getRecordId().equalsIgnoreCase(id)) {
+        if ((id == null) || primaryKey) {
+            for (BaseEntity baseEntity : (List<BaseEntity>) (baseDAO.findAll().values())) {
+                if ((id == null) || baseEntity.getRecordId().equalsIgnoreCase(id)) {
                     entitySet.getEntities().add(odtt.translate(baseEntity));
                 }
             }
-            else if (policyId) {
-                Claim claim = (Claim) baseEntity;
-                if (claim.getPolicy().getRecordId().equalsIgnoreCase(id)) {
-                    entitySet.getEntities().add(odtt.translate(baseEntity));
-                }
+        } else if (claimId) {
+            for (Beneficiary ben : ((BeneficiaryDAO) baseDAO).findAllByClaimId(id).values()) {
+                entitySet.getEntities().add(odtt.translate(ben));
             }
-            else if (productId) {
-                Policy pol = (Policy) baseEntity;
-                if (pol.getProduct().getRecordId().equalsIgnoreCase(id)) {
-                    entitySet.getEntities().add(odtt.translate(baseEntity));
-                }
+        } else if (policyId) {
+            for (Claim claim : ((ClaimDAO) baseDAO).findAllByPolicyId(id).values()) {
+                entitySet.getEntities().add(odtt.translate(claim));
+            }
+        }
+        else if (productId) {
+            for (Policy policy : ((PolicyDAO) baseDAO).findAllByProductId(id).values()) {
+                entitySet.getEntities().add(odtt.translate(policy));
+            }
+        }
+        else if (contactIdentifier) {
+            for (Beneficiary ben : ((BeneficiaryDAO) baseDAO).findAllByContactIdentifier(id).values()) {
+                entitySet.getEntities().add(odtt.translate(ben));
+            }
+        }
+        else if (policyHolder) {
+            for (Policy policy : ((PolicyDAO) baseDAO).findAllByPolicyHolderId(id).values()) {
+                entitySet.getEntities().add(odtt.translate(policy));
             }
         }
 

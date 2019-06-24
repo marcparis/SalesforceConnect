@@ -4,7 +4,10 @@ import com.codescience.salesforceconnect.data.PolicyDAO;
 import com.codescience.salesforceconnect.entities.Policy;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Implementation of the PolicyDAO interface for Simple in Memory Pojos
@@ -70,5 +73,47 @@ public class PolicyDAOPojo implements PolicyDAO {
     @Override
     public Policy delete(String recordId) {
         return factory.getPolicies().remove(recordId);
+    }
+
+    /**
+     * Method returns a map of policies for a given policyHolder
+     *
+     * @param policyHolderId Policy Holder Id
+     * @return Map of Policy objects
+     */
+    @Override
+    public Map<String, Policy> findAllByPolicyHolderId(String policyHolderId) {
+        Map<String, Policy> map = new TreeMap<String, Policy>();
+
+        for (Policy policy : findAll().values()) {
+            if ((policyHolderId == null) && policy.getPolicyHolderId() == null) {
+                map.put(policy.getRecordId(), policy);
+            }
+            else if ((policyHolderId != null) && policyHolderId.equalsIgnoreCase(policy.getPolicyHolderId())) {
+                map.put(policy.getRecordId(), policy);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * Method returns a Map of policies for a given productId
+     *
+     * @param productId Product Id
+     * @return Map of Policy objects
+     */
+    @Override
+    public Map<String, Policy> findAllByProductId(String productId) {
+        Map<String, Policy> map = new TreeMap<String, Policy>();
+
+        for (Policy policy : findAll().values()) {
+            if ((productId == null) && (policy.getProduct() == null)) {
+                map.put(policy.getRecordId(), policy);
+            }
+            else if ((productId != null) && productId.equalsIgnoreCase(policy.getProduct().getRecordId())) {
+                map.put(policy.getRecordId(), policy);
+            }
+        }
+        return map;
     }
 }

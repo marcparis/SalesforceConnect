@@ -5,6 +5,7 @@ import com.codescience.salesforceconnect.entities.Beneficiary;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Implementation of the BeneficiaryDAO interface for Simple in Memory Pojos
@@ -71,5 +72,47 @@ public class BeneficiaryDAOPojo implements BeneficiaryDAO {
     @Override
     public Beneficiary delete(String recordId) {
         return factory.getBeneficiaries().remove(recordId);
+    }
+
+    /**
+     * Method returns a map of beneficiaries for a given contactIdentifier
+     *
+     * @param contactIdentifier Contact Identifier
+     * @return Map of Beneficiary objects
+     */
+    @Override
+    public Map<String, Beneficiary> findAllByContactIdentifier(String contactIdentifier) {
+        Map<String, Beneficiary> map = new TreeMap<String, Beneficiary>();
+
+        for (Beneficiary beneficiary : findAll().values()) {
+            if ((contactIdentifier == null) && (beneficiary.getContactIdentifierId() == null)) {
+                map.put(beneficiary.getRecordId(), beneficiary);
+            }
+            else if ((contactIdentifier != null) && contactIdentifier.equalsIgnoreCase(beneficiary.getContactIdentifierId())) {
+                map.put(beneficiary.getRecordId(), beneficiary);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * Method returns a map of beneficiaries for a given claimId
+     *
+     * @param claimId Claim Id
+     * @return Map of Beneficiary objects
+     */
+    @Override
+    public Map<String, Beneficiary> findAllByClaimId(String claimId) {
+        Map<String, Beneficiary> map = new TreeMap<String, Beneficiary>();
+
+        for (Beneficiary beneficiary : findAll().values()) {
+            if ((claimId == null) && (beneficiary.getClaim() == null)) {
+                map.put(beneficiary.getRecordId(), beneficiary);
+            }
+            else if ((claimId != null) && claimId.equalsIgnoreCase(beneficiary.getClaim().getRecordId())) {
+                map.put(beneficiary.getRecordId(), beneficiary);
+            }
+        }
+        return map;
     }
 }

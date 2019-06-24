@@ -5,6 +5,7 @@ import com.codescience.salesforceconnect.entities.Claim;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Implementation of the ClaimDAO interface for Simple in Memory Pojos
@@ -13,6 +14,27 @@ public class ClaimDAOPojo implements ClaimDAO {
 
     // Reference to the object store
     private ObjectFactory factory = new ObjectFactory();
+
+    /**
+     * Method returns a map of Claims for a given policy id
+     *
+     * @param policyId Policy Id
+     * @return Map of Claim objects
+     */
+    @Override
+    public Map<String, Claim> findAllByPolicyId(String policyId) {
+        Map<String, Claim> map = new TreeMap<String, Claim>();
+
+        for (Claim claim : findAll().values()) {
+            if ((policyId == null) && (claim.getPolicy() == null)) {
+                map.put(claim.getRecordId(), claim);
+            }
+            else if ((policyId != null) && policyId.equalsIgnoreCase(claim.getPolicy().getRecordId())) {
+                map.put(claim.getRecordId(), claim);
+            }
+        }
+        return map;
+    }
 
     /**
      * Method returns all objects of keyed by the record Id
