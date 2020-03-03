@@ -208,6 +208,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         CsdlProperty productType = new CsdlProperty().setName(Constants.PRODUCT_TYPE).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty costPerUnitAmount = new CsdlProperty().setName(Constants.COST_PER_UNIT_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
         CsdlProperty activeProduct = new CsdlProperty().setName(Constants.PRODUCT_ACTIVE).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
+        CsdlProperty productFamily = new CsdlProperty().setName("ProductFamily").setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 
         // create CsdlPropertyRef for Key element
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
@@ -216,7 +217,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
         entityType.setName(ET_PRODUCT_NAME);
-        entityType.setProperties(Arrays.asList(productId,productName, productType, costPerUnitAmount, activeProduct));
+        entityType.setProperties(Arrays.asList(productId,productName, productType, costPerUnitAmount, activeProduct, productFamily));
         entityType.setKey(Collections.singletonList(propertyRef));
 
         return entityType;

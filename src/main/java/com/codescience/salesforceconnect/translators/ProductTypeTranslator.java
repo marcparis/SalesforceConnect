@@ -28,6 +28,7 @@ public class ProductTypeTranslator extends ODataTypeTranslator {
         entity.addProperty(new Property(null, Constants.PRODUCT_ID, ValueType.PRIMITIVE, product.getId()));
         entity.addProperty(new Property(null, Constants.PRODUCT_NAME, ValueType.PRIMITIVE, product.getProductName()));
         entity.addProperty(new Property(null, Constants.PRODUCT_TYPE, ValueType.PRIMITIVE, product.getProductType()));
+        entity.addProperty(new Property(null, "ProductFamily", ValueType.PRIMITIVE, "My Family: " + Math.random() * 1000));
         if (product.getCostPerUnit() != null) {
             entity.addProperty(new Property(null, Constants.COST_PER_UNIT_AMOUNT, ValueType.PRIMITIVE, product.getCostPerUnit().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
         }
