@@ -9,7 +9,7 @@
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>Codescience Olingo Salesforce Connect Sample</name>
-    <url>http://www.codescience.com</url>
+    <url>https://www.codescience.com</url>
     <properties>
         <javax.servlet.version>3.0.1</javax.servlet.version>
         <odata.version>4.3.0</odata.version>
@@ -163,12 +163,6 @@
                 <username>admin</username>
                 <password>password</password>
             </configuration>
-        </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-            </executions>
         </plugin>
         </plugins>
     </build>
