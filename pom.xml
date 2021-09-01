@@ -11,6 +11,8 @@
     <name>Codescience Olingo Salesforce Connect Sample</name>
     <url>https://www.codescience.com</url>
     <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <odata.version>4.6.0</odata.version>
         <slf4j.version>1.7.26</slf4j.version>
@@ -110,25 +112,15 @@
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven3-plugin</artifactId>
-            <version>${codehaus.cargo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>${maven.warplugin.version}</version>
-            <type>maven-plugin</type>
-        </dependency>
     </dependencies>
     <build>
         <finalName>${project.artifactId}</finalName>
         <defaultGoal>clean compile war:war cargo:run</defaultGoal>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>${maven.warplugin.version}</version>
                 <configuration>
                 </configuration>
             </plugin>
