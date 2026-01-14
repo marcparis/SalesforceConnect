@@ -1,13 +1,15 @@
 package com.codescience.salesforceconnect.entities;
 
+import org.springframework.lang.NonNull;
+
 import java.io.Serializable;
 
 /**
  * Base Entity class that should be subclassed by all POJO entity model implementations
  */
-public abstract class BaseEntity implements Serializable, Comparable {
+public abstract class BaseEntity implements Serializable, Comparable<BaseEntity> {
 
-    static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String id;
 
@@ -53,17 +55,12 @@ public abstract class BaseEntity implements Serializable, Comparable {
      * Method compares the argument passed in to Id parameter of the base entity. If the value passed in is a different type than Base Entity return 0
      * If the object passed in is null return -1 (nulls go to the end). If the object passed in has a null id and this object has a null id return 0
      * If one object has a null id it's sent to the end.
-     * @param o Object to compare
+     * @param be BaseEntity to compare
      * @return 0 if they are the same, -1 if this object is smaller, 1 if this object is bigger
      */
-    public int compareTo(Object o) {
+    public int compareTo(@NonNull BaseEntity be) {
         int returnValue = 0;
-
-        if (o == null) {
-            returnValue = -1;
-        }
-        else if ((o != this) && (o instanceof BaseEntity)) {
-            BaseEntity be = (BaseEntity) o;
+        if ((be != this)) {
             if ((be.getId() == null) && (getId() == null)) {
                 returnValue = 0;
             } else if (be.getId() == null) {

@@ -15,42 +15,21 @@ import java.util.List;
  */
 public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
-    // Service Namespace
-    private static final String NAMESPACE = "OData.InsuranceSystem";
-
-    // EDM Container
-    private static final String CONTAINER_NAME = "Container";
-    private static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, CONTAINER_NAME);
-
-    // Entity Types Names
-    private static final String ET_PRODUCT_NAME = "Product";
-    public static final FullQualifiedName ET_PRODUCT_FQN = new FullQualifiedName(NAMESPACE, ET_PRODUCT_NAME);
-
-    private static final String ET_POLICY_NAME = "Policy";
-    public static final FullQualifiedName ET_POLICY_FQN = new FullQualifiedName(NAMESPACE, ET_POLICY_NAME);
-
-    private static final String ET_CLAIM_NAME = "Claim";
-    public static final FullQualifiedName ET_CLAIM_FQN = new FullQualifiedName(NAMESPACE, ET_CLAIM_NAME);
-
-    private static final String ET_BENEFICIARY_NAME = "Beneficiary";
-    public static final FullQualifiedName ET_BENEFICIARY_FQN = new FullQualifiedName(NAMESPACE, ET_BENEFICIARY_NAME);
-
-    // Entity Set Names
-    public static final String ES_PRODUCTS_NAME = "Products";
-    public static final String ES_POLICIES_NAME = "Policies";
-    public static final String ES_CLAIMS_NAME = "Claims";
-    public static final String ES_BENEFICIARIES_NAME = "Beneficiaries";
-
+    private static final FullQualifiedName CONTAINER = new FullQualifiedName(Constants.NAMESPACE, Constants.CONTAINER_NAME);
+    public static final FullQualifiedName ET_PRODUCT_FQN = new FullQualifiedName(Constants.NAMESPACE, Constants.ET_PRODUCT_NAME);
+    public static final FullQualifiedName ET_POLICY_FQN = new FullQualifiedName(Constants.NAMESPACE, Constants.ET_POLICY_NAME);
+    public static final FullQualifiedName ET_CLAIM_FQN = new FullQualifiedName(Constants.NAMESPACE, Constants.ET_CLAIM_NAME);
+    public static final FullQualifiedName ET_BENEFICIARY_FQN = new FullQualifiedName(Constants.NAMESPACE, Constants.ET_BENEFICIARY_NAME);
 
     @Override
     public List<CsdlSchema> getSchemas() {
 
         // create Schema
         CsdlSchema schema = new CsdlSchema();
-        schema.setNamespace(NAMESPACE);
+        schema.setNamespace(Constants.NAMESPACE);
 
         // add EntityTypes
-        List<CsdlEntityType> entityTypes = new ArrayList<CsdlEntityType>();
+        List<CsdlEntityType> entityTypes = new ArrayList<>();
         entityTypes.add(getEntityType(ET_PRODUCT_FQN));
         entityTypes.add(getEntityType(ET_POLICY_FQN));
         entityTypes.add(getEntityType(ET_CLAIM_FQN));
@@ -61,7 +40,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         schema.setEntityContainer(getEntityContainer());
 
         // finally
-        List<CsdlSchema> schemas = new ArrayList<CsdlSchema>();
+        List<CsdlSchema> schemas = new ArrayList<>();
         schemas.add(schema);
 
         return schemas;
@@ -92,65 +71,65 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
 
         if(entityContainer.equals(CONTAINER)){
-            if(entitySetName.equals(ES_PRODUCTS_NAME)){
+            if(entitySetName.equals(Constants.ES_PRODUCTS_NAME)){
                 CsdlEntitySet entitySet = new CsdlEntitySet();
-                entitySet.setName(ES_PRODUCTS_NAME);
+                entitySet.setName(Constants.ES_PRODUCTS_NAME);
                 entitySet.setType(ET_PRODUCT_FQN);
 
                 return entitySet;
             }
-            if(entitySetName.equals(ES_POLICIES_NAME)){
+            if(entitySetName.equals(Constants.ES_POLICIES_NAME)){
                 CsdlEntitySet entitySet = new CsdlEntitySet();
-                entitySet.setName(ES_POLICIES_NAME);
+                entitySet.setName(Constants.ES_POLICIES_NAME);
                 entitySet.setType(ET_POLICY_FQN);
 
                 // navigation
-                List<CsdlNavigationPropertyBinding> navPropBindingList = new ArrayList<CsdlNavigationPropertyBinding>();
+                List<CsdlNavigationPropertyBinding> navPropBindingList = new ArrayList<>();
 
                 CsdlNavigationPropertyBinding navPropBinding = new CsdlNavigationPropertyBinding();
-                navPropBinding.setTarget(CONTAINER.getFullQualifiedNameAsString() + "/" + ES_PRODUCTS_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath(ET_PRODUCT_NAME); // the path from entity type to navigation property
+                navPropBinding.setTarget(CONTAINER.getFullQualifiedNameAsString() + "/" + Constants.ES_PRODUCTS_NAME); // the target entity set, where the navigation property points to
+                navPropBinding.setPath(Constants.ET_PRODUCT_NAME); // the path from entity type to navigation property
                 navPropBindingList.add(navPropBinding);
                 navPropBinding = new CsdlNavigationPropertyBinding();
-                navPropBinding.setTarget(ES_CLAIMS_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath(ES_CLAIMS_NAME); // the path from entity type to navigation property
+                navPropBinding.setTarget(Constants.ES_CLAIMS_NAME); // the target entity set, where the navigation property points to
+                navPropBinding.setPath(Constants.ES_CLAIMS_NAME); // the path from entity type to navigation property
                 navPropBindingList.add(navPropBinding);
                 entitySet.setNavigationPropertyBindings(navPropBindingList);
 
                 return entitySet;
             }
-            if(entitySetName.equals(ES_CLAIMS_NAME)){
+            if(entitySetName.equals(Constants.ES_CLAIMS_NAME)){
                 CsdlEntitySet entitySet = new CsdlEntitySet();
-                entitySet.setName(ES_CLAIMS_NAME);
+                entitySet.setName(Constants.ES_CLAIMS_NAME);
                 entitySet.setType(ET_CLAIM_FQN);
 
                 // navigation
-                List<CsdlNavigationPropertyBinding> navPropBindingList = new ArrayList<CsdlNavigationPropertyBinding>();
+                List<CsdlNavigationPropertyBinding> navPropBindingList = new ArrayList<>();
 
                 CsdlNavigationPropertyBinding navPropBinding = new CsdlNavigationPropertyBinding();
-                navPropBinding.setTarget(ES_POLICIES_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath(ET_POLICY_NAME); // the path from entity type to navigation property
+                navPropBinding.setTarget(Constants.ES_POLICIES_NAME); // the target entity set, where the navigation property points to
+                navPropBinding.setPath(Constants.ET_POLICY_NAME); // the path from entity type to navigation property
                 navPropBindingList.add(navPropBinding);
 
                 // navigation
                 navPropBinding = new CsdlNavigationPropertyBinding();
-                navPropBinding.setTarget(ES_BENEFICIARIES_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath(ES_BENEFICIARIES_NAME); // the path from entity type to navigation property
+                navPropBinding.setTarget(Constants.ES_BENEFICIARIES_NAME); // the target entity set, where the navigation property points to
+                navPropBinding.setPath(Constants.ES_BENEFICIARIES_NAME); // the path from entity type to navigation property
                 navPropBindingList.add(navPropBinding);
                 entitySet.setNavigationPropertyBindings(navPropBindingList);
 
                 return entitySet;
             }
-            if(entitySetName.equals(ES_BENEFICIARIES_NAME)){
+            if(entitySetName.equals(Constants.ES_BENEFICIARIES_NAME)){
                 CsdlEntitySet entitySet = new CsdlEntitySet();
-                entitySet.setName(ES_BENEFICIARIES_NAME);
+                entitySet.setName(Constants.ES_BENEFICIARIES_NAME);
                 entitySet.setType(ET_BENEFICIARY_FQN);
 
                 // navigation
                 CsdlNavigationPropertyBinding navPropBinding = new CsdlNavigationPropertyBinding();
-                navPropBinding.setTarget(ES_CLAIMS_NAME); // the target entity set, where the navigation property points to
-                navPropBinding.setPath(ET_CLAIM_NAME); // the path from entity type to navigation property
-                List<CsdlNavigationPropertyBinding> navPropBindingList = new ArrayList<CsdlNavigationPropertyBinding>();
+                navPropBinding.setTarget(Constants.ES_CLAIMS_NAME); // the target entity set, where the navigation property points to
+                navPropBinding.setPath(Constants.ET_CLAIM_NAME); // the path from entity type to navigation property
+                List<CsdlNavigationPropertyBinding> navPropBindingList = new ArrayList<>();
                 navPropBindingList.add(navPropBinding);
                 entitySet.setNavigationPropertyBindings(navPropBindingList);
 
@@ -161,19 +140,23 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         return null;
     }
 
+    /**
+     * Method creates and returns a CsdlEntityContainer
+     * @return CsdlEntityContainer that contains the schema definition for the objects
+     */
     @Override
     public CsdlEntityContainer getEntityContainer() {
 
         // create EntitySets
-        List<CsdlEntitySet> entitySets = new ArrayList<CsdlEntitySet>();
-        entitySets.add(getEntitySet(CONTAINER, ES_PRODUCTS_NAME));
-        entitySets.add(getEntitySet(CONTAINER, ES_POLICIES_NAME));
-        entitySets.add(getEntitySet(CONTAINER, ES_CLAIMS_NAME));
-        entitySets.add(getEntitySet(CONTAINER, ES_BENEFICIARIES_NAME));
+        List<CsdlEntitySet> entitySets = new ArrayList<>();
+        entitySets.add(getEntitySet(CONTAINER, Constants.ES_PRODUCTS_NAME));
+        entitySets.add(getEntitySet(CONTAINER, Constants.ES_POLICIES_NAME));
+        entitySets.add(getEntitySet(CONTAINER, Constants.ES_CLAIMS_NAME));
+        entitySets.add(getEntitySet(CONTAINER, Constants.ES_BENEFICIARIES_NAME));
 
         // create EntityContainer
         CsdlEntityContainer entityContainer = new CsdlEntityContainer();
-        entityContainer.setName(CONTAINER_NAME);
+        entityContainer.setName(Constants.CONTAINER_NAME);
         entityContainer.setEntitySets(entitySets);
 
         return entityContainer;
@@ -182,7 +165,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
     /**
      * Method will return the CsdlEntityContainerInfo for the given container name passed in
      * @param entityContainerName FullQualified Container name
-     * @return CsdlEntityContainerInfo
+     * @return CsdlEntityContainerInfo Defines the container information
      */
     @Override
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
@@ -199,14 +182,14 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
     /**
      * Method returns a CsdlEntityType for the Product OData object
-     * @return CsdlEntityType
+     * @return CsdlEntityType Entity type for the Product (schema definition)
      */
     private CsdlEntityType getProductEntityType() {
         //create EntityType properties
         CsdlProperty productId = new CsdlProperty().setName(Constants.PRODUCT_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty productName = new CsdlProperty().setName(Constants.PRODUCT_NAME).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty productType = new CsdlProperty().setName(Constants.PRODUCT_TYPE).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-        CsdlProperty costPerUnitAmount = new CsdlProperty().setName(Constants.COST_PER_UNIT_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+        CsdlProperty costPerUnit = new CsdlProperty().setName(Constants.COST_PER_UNIT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
         CsdlProperty activeProduct = new CsdlProperty().setName(Constants.PRODUCT_ACTIVE).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
 
         // create CsdlPropertyRef for Key element
@@ -215,8 +198,8 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
-        entityType.setName(ET_PRODUCT_NAME);
-        entityType.setProperties(Arrays.asList(productId,productName, productType, costPerUnitAmount, activeProduct));
+        entityType.setName(Constants.ET_PRODUCT_NAME);
+        entityType.setProperties(Arrays.asList(productId,productName, productType, costPerUnit, activeProduct));
         entityType.setKey(Collections.singletonList(propertyRef));
 
         return entityType;
@@ -224,7 +207,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
     /**
      * Method returns a CsdlEntityType for the Policy OData object
-     * @return CsdlEntityType
+     * @return CsdlEntityType Entity type for the policy (schema definition)
      */
     private CsdlEntityType getPolicyEntityType() {
         //create EntityType properties
@@ -245,7 +228,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
-        entityType.setName(ET_POLICY_NAME);
+        entityType.setName(Constants.ET_POLICY_NAME);
         entityType.setProperties(Arrays.asList(policyId, policyStartDate, policyEndDate, policyHolderId, totalCostAmount, numberOfUnits, active, productId));
         entityType.setNavigationProperties(Arrays.asList(product,claims));
         entityType.setKey(Collections.singletonList(propertyRef));
@@ -274,7 +257,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
-        entityType.setName(ET_CLAIM_NAME);
+        entityType.setName(Constants.ET_CLAIM_NAME);
         entityType.setProperties(Arrays.asList(claimId, claimDate, claimReason, approved, claimAmount, policyId));
         entityType.setNavigationProperties(Arrays.asList(policy, beneficiaries));
         entityType.setKey(Collections.singletonList(propertyRef));
@@ -297,9 +280,9 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
-        entityType.setName(ET_BENEFICIARY_NAME);
+        entityType.setName(Constants.ET_BENEFICIARY_NAME);
         entityType.setProperties(Arrays.asList(beneficiaryId, beneficiaryPercent, beneficiaryAmount, contactIdentifierId,claimId));
-        entityType.setNavigationProperties(Arrays.asList(claim));
+        entityType.setNavigationProperties(Collections.singletonList(claim));
         entityType.setKey(Collections.singletonList(propertyRef));
 
         return entityType;

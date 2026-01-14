@@ -8,7 +8,7 @@ import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Subclass of ODataTypeTranslator to handle Policy Translation from Pojo Policy object to Olingo Entity Object.
@@ -31,12 +31,12 @@ public class PolicyTypeTranslator extends ODataTypeTranslator {
         entity.addProperty(new Property(null, Constants.POLICY_HOLDER_ID, ValueType.PRIMITIVE, policy.getPolicyHolderId()));
         entity.addProperty(new Property(null, Constants.POLICY_START_DATE, ValueType.PRIMITIVE, policy.getPolicyStartDate()));
         if (policy.getTotalCost() != null) {
-            entity.addProperty(new Property(null, Constants.TOTAL_COST_AMOUNT, ValueType.PRIMITIVE, policy.getTotalCost().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+            entity.addProperty(new Property(null, Constants.TOTAL_COST_AMOUNT, ValueType.PRIMITIVE, policy.getTotalCost().setScale(0, RoundingMode.HALF_EVEN)));
         }
         entity.addProperty(new Property(null, "Active", ValueType.PRIMITIVE, policy.isActive()));
         entity.addProperty(new Property(null, "ProductId", ValueType.PRIMITIVE, policy.getProduct().getId()));
         entity.setType(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString());
-        entity.setId(createId(entity, "Id"));
+        entity.setId(createId(entity, Constants.POLICY_ID));
         return entity;
     }
 
@@ -45,6 +45,15 @@ public class PolicyTypeTranslator extends ODataTypeTranslator {
      * @return String with the Policy Set Name
      */
     public String getEntitySetName() {
-        return OdataEdmProvider.ES_POLICIES_NAME;
+        return Constants.ES_POLICIES_NAME;
+    }
+
+    /**
+     * Each translator will return the appropriate class name of the BaseEntity it represents
+     * @return Name of the Policy Class
+     */
+    @Override
+    public String getClassName() {
+        return Policy.class.getName();
     }
 }

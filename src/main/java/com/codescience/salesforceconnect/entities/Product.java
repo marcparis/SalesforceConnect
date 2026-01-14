@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  */
 public class Product extends BaseEntity {
 
-    static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String productName;
 

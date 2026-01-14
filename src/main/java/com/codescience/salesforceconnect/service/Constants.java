@@ -1,23 +1,53 @@
 package com.codescience.salesforceconnect.service;
 
 /**
+ * Constants defined for the application
  * Created by marcpparis on 2/20/17.
  */
 public class Constants {
 
+    public static final String EDM_PROVIDER = "edmProvider";
+
+    public static final String ENTITY_PROCESSOR = "entityProcessor";
+
+    public static final String ENTITY_COLLECTION_PROCESSOR = "entityCollectionProcessor";
+
+    public static final String APPLICATION_CONTEXT_NAME = "org.springframework.web.context.WebApplicationContext.ROOT";
+
+    // Service Namespace
+    public static final String NAMESPACE = "OData.InsuranceSystem";
+
+    // EDM Container
+    public static final String CONTAINER_NAME = "Container";
+
+    // Entity Types Names
+    public static final String ET_PRODUCT_NAME = "Product";
+    public static final String ET_POLICY_NAME = "Policy";
+    public static final String ET_CLAIM_NAME = "Claim";
+    public static final String ET_BENEFICIARY_NAME = "Beneficiary";
+
+    // Entity Set Names
+    public static final String ES_PRODUCTS_NAME = "Products";
+    public static final String ES_POLICIES_NAME = "Policies";
+    public static final String ES_CLAIMS_NAME = "Claims";
+    public static final String ES_BENEFICIARIES_NAME = "Beneficiaries";
+
+
+    public static final String ID= "Id";
+
     // PRODUCT PARAMETER CONSTANTS
-    public static final String PRODUCT_ID = "Id";
+    public static final String PRODUCT_ID = ID;
 
     public static final String PRODUCT_NAME = "ProductName";
 
     public static final String PRODUCT_TYPE = "ProductType";
 
-    public static final String COST_PER_UNIT_AMOUNT = "CostPerUnitAmount";
+    public static final String COST_PER_UNIT = "CostPerUnit";
 
     public static final String PRODUCT_ACTIVE = "Active";
 
     // POLICY PARAMETER CONSTANTS
-    public static final String POLICY_ID = "Id";
+    public static final String POLICY_ID = ID;
 
     public static final String POLICY_START_DATE = "PolicyStartDate";
 
@@ -36,7 +66,7 @@ public class Constants {
     public static final String POLICY_PRODUCT_ID = "ProductId";
 
     // CLAIM PARAMETER CONSTANTS
-    public static final String CLAIM_ID = "Id";
+    public static final String CLAIM_ID = ID;
 
     public static final String CLAIM_DATE = "ClaimDate";
 
@@ -54,7 +84,7 @@ public class Constants {
 
     // BENEFICIARY PARAMETER CONSTANTS
 
-    public static final String BENEFICIARY_ID = "Id";
+    public static final String BENEFICIARY_ID = ID;
 
     public static final String BENEFICIARY_PERCENT = "BeneficiaryPercent";
 

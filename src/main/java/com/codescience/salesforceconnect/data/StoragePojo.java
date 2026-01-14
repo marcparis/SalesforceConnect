@@ -1,22 +1,25 @@
 package com.codescience.salesforceconnect.data;
 
 import com.codescience.salesforceconnect.entities.*;
+import com.codescience.salesforceconnect.service.Constants;
+import com.codescience.salesforceconnect.service.Messages;
 import com.codescience.salesforceconnect.service.OdataEdmProvider;
 import com.codescience.salesforceconnect.translators.ODataTypeTranslator;
+import com.codescience.salesforceconnect.util.Util;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
+import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
+import org.apache.olingo.commons.api.ex.ODataException;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
-import org.apache.olingo.server.api.uri.queryoption.FilterOption;
-import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
-import org.apache.olingo.server.api.uri.queryoption.expression.ExpressionVisitor;
+import org.apache.olingo.server.api.uri.queryoption.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,8 +28,9 @@ import java.util.regex.Pattern;
  * Implementation of the Storage interface that stores Simple Java objects in a Map
  */
 public class StoragePojo implements Storage {
-    private Map<String, ODataTypeTranslator> typeTranslators = new HashMap<String, ODataTypeTranslator>();
-    private Map<String, Map<String, BaseEntity>> objects = new HashMap <String, Map<String, BaseEntity>> ();
+    private static final Logger LOG = LoggerFactory.getLogger(StoragePojo.class);
+    private Map<String, ODataTypeTranslator> typeTranslators = new HashMap<>();
+    private final Map<String, Map<String, BaseEntity>> objects = new HashMap <> ();
 
     public StoragePojo() {
         initializeData();
@@ -36,7 +40,8 @@ public class StoragePojo implements Storage {
      * Method used to initialize default pojos as the entity model
      */
     private void initializeData() {
-        Map <String, BaseEntity> mapOfProducts = new TreeMap<String, BaseEntity>();
+        LOG.info("In initializeData method");
+        Map <String, BaseEntity> mapOfProducts = new TreeMap<>();
         objects.put(OdataEdmProvider.ET_PRODUCT_FQN.getFullQualifiedNameAsString(), mapOfProducts);
 
         Product prod = new Product();
@@ -87,7 +92,7 @@ public class StoragePojo implements Storage {
         prod6.setProductType("Life");
         mapOfProducts.put(prod6.getId(), prod6);
 
-        Map <String, BaseEntity> mapOfPolicies = new TreeMap<String, BaseEntity>();
+        Map <String, BaseEntity> mapOfPolicies = new TreeMap<>();
         objects.put(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString(), mapOfPolicies);
 
 
@@ -123,7 +128,7 @@ public class StoragePojo implements Storage {
         policy3.setPolicyStartDate(cal.getTime());
         mapOfPolicies.put(policy3.getId(), policy3);
 
-        Map <String, BaseEntity> mapOfClaims = new TreeMap<String, BaseEntity>();
+        Map <String, BaseEntity> mapOfClaims = new TreeMap<>();
         objects.put(OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString(), mapOfClaims);
 
         cal.set( 2016, Calendar.JULY, 28);
@@ -156,7 +161,7 @@ public class StoragePojo implements Storage {
         policy2.addClaim(claim3);
         mapOfClaims.put(claim3.getId(), claim3);
 
-        Map <String, BaseEntity> mapOfBeneficiaries = new TreeMap<String, BaseEntity>();
+        Map <String, BaseEntity> mapOfBeneficiaries = new TreeMap<>();
         objects.put(OdataEdmProvider.ET_BENEFICIARY_FQN.getFullQualifiedNameAsString(), mapOfBeneficiaries);
 
         Beneficiary beneficiary = new Beneficiary();
@@ -186,7 +191,9 @@ public class StoragePojo implements Storage {
      * @param edmEntitySet EntitySet (collection) type to be read
      * @return EntityCollection containing Entities read from Pojo storage
      */
-    public EntityCollection readEntitySetData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
+    @Override
+    public EntityCollection readEntitySetData(EdmEntitySet edmEntitySet, UriInfo uriInfo) throws ODataException {
+        LOG.info("In readEntitySetData method");
         EntityCollection entitySet = new EntityCollection();
 
         EdmEntityType edmEntityType = edmEntitySet.getEntityType();
@@ -194,6 +201,10 @@ public class StoragePojo implements Storage {
         ODataTypeTranslator odtt = getTypeTranslators().get(objectType);
 
         FilterOption filterOption = uriInfo.getFilterOption();
+        SelectOption selectOption = uriInfo.getSelectOption();
+        TopOption topOption = uriInfo.getTopOption();
+        SkipOption skipOption = uriInfo.getSkipOption();
+        OrderByOption orderByOption = uriInfo.getOrderByOption();
 
         // TODO Enhance using more general expressions and visitors (future session)
         // TODO Currently the code can only handle id eq value querries on primary keys.
@@ -206,17 +217,17 @@ public class StoragePojo implements Storage {
 
         if (filterOption != null) {
             String value = filterOption.getText().toLowerCase();
-            if (value.indexOf("claimid eq") > -1) {
+            if (value.contains("claimid eq")) {
                 claimId = true;
             }
-            else if (value.indexOf("policyid eq") > -1) {
+            else if (value.contains("policyid eq")) {
                 policyId = true;
 
             }
-            else if (value.indexOf("productid eq") > -1) {
+            else if (value.contains("productid eq")) {
                 productId = true;
             }
-            else if (value.indexOf("id eq") > -1) {
+            else if (value.contains("id eq")) {
                 primaryKey = true;
             }
             Pattern p = Pattern.compile("-?\\d+");
@@ -262,14 +273,13 @@ public class StoragePojo implements Storage {
      * @param keyParams  Identity keys to read from the data storage
      * @return Entity object containing data or null if nothing found
      */
-    public Entity readEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams) {
-        Entity entity = null;
-
+    @Override
+    public Entity readEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams) throws ODataException {
+        LOG.info("In readEntityData method");
         EdmEntityType edmEntityType = edmEntitySet.getEntityType();
         FullQualifiedName fqn = edmEntityType.getFullQualifiedName();
         String objectType = fqn.getFullQualifiedNameAsString();
-        String keyName = edmEntityType.getKeyPredicateNames().get(0);
-        String keyValue = getPrimaryKeyFromParam(keyName, keyParams);
+        String keyValue = Util.getPrimaryKeyFromParam(edmEntityType.getKeyPredicateNames(), keyParams);
 
         // No primary key sent nothing to return
         if (keyValue == null) {
@@ -304,9 +314,11 @@ public class StoragePojo implements Storage {
      * @param targetEntityType Target entity type that should be returned
      * @return EntityCollection populated with 0 or more TargetEntityType objects
      */
-    public EntityCollection getRelatedEntityCollection(Entity sourceEntity, EdmEntityType targetEntityType) {
+    @Override
+    public EntityCollection getRelatedEntityCollection(Entity sourceEntity, EdmEntityType targetEntityType) throws ODataException {
+        LOG.info("In getRelatedEntityCollection method");
         Map<String, BaseEntity> entities = objects.get(sourceEntity.getType());
-        BaseEntity ent = entities.get(parseId(sourceEntity.getId()));
+        BaseEntity ent = entities.get(Util.parseId(sourceEntity.getId()));
         ODataTypeTranslator odtt = getTypeTranslators().get(targetEntityType.getFullQualifiedName().getFullQualifiedNameAsString());
         EntityCollection ec = new EntityCollection();
 
@@ -343,9 +355,11 @@ public class StoragePojo implements Storage {
      * @param keyPredicates  Filter parameters that can be sent it
      * @return Entity of target type that matches the entity.
      */
-    public Entity getRelatedEntity(Entity sourceEntity, EdmEntityType targetEntityType, List<UriParameter> keyPredicates) {
+    @Override
+    public Entity getRelatedEntity(Entity sourceEntity, EdmEntityType targetEntityType, List<UriParameter> keyPredicates) throws ODataException {
+        LOG.info("In getRelatedEntity method");
         Map<String, BaseEntity> entities = objects.get(sourceEntity.getType());
-        BaseEntity ent = entities.get(parseId(sourceEntity.getId()));
+        BaseEntity ent = entities.get(Util.parseId(sourceEntity.getId()));
         ODataTypeTranslator odtt = getTypeTranslators().get(targetEntityType.getFullQualifiedName().getFullQualifiedNameAsString());
 
         Entity returnEntity = null;
@@ -362,7 +376,7 @@ public class StoragePojo implements Storage {
                 returnEntity = odtt.translate(claim.getPolicy());
             }
             else if (OdataEdmProvider.ET_BENEFICIARY_FQN.getFullQualifiedNameAsString().equals(targetTypeName)) {
-                String targetEntityId = getPrimaryKeyFromParam("Id", keyPredicates);
+                String targetEntityId = Util.getPrimaryKeyFromParam(targetEntityType.getKeyPredicateNames(), keyPredicates);
 
                 for (Beneficiary b : claim.getBeneficiaries()) {
                     if ((targetEntityId == null) || (targetEntityId.equals(b.getId()))) {
@@ -377,7 +391,7 @@ public class StoragePojo implements Storage {
         else if (OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString().equals(sourceTypeName)) {
             Policy pol = (Policy) ent;
             if (OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString().equals(targetTypeName)) {
-                String targetEntityId = getPrimaryKeyFromParam("Id", keyPredicates);
+                String targetEntityId = Util.getPrimaryKeyFromParam(targetEntityType.getKeyPredicateNames(), keyPredicates);
 
                 for (Claim c : pol.getClaims()) {
                     if ((targetEntityId == null) || (targetEntityId.equals(c.getId()))) {
@@ -407,43 +421,148 @@ public class StoragePojo implements Storage {
      * @param targetEntityType type of target object that will be returned
      * @return EntityCollection populated with 0 or more TargetEntityType objects
      */
-    public Entity getRelatedEntity(Entity sourceEntity, EdmEntityType targetEntityType) {
+    @Override
+    public Entity getRelatedEntity(Entity sourceEntity, EdmEntityType targetEntityType) throws ODataException {
         return getRelatedEntity(sourceEntity, targetEntityType, null);
     }
 
     /**
-     * Method extracts the Primary key parameter from the list of keyParams passed in
-     * @param paramName Name of the primary key parameter
-     * @param keyParams List of key params to inspect
-     * @return String that represents the primary key
-         */
-    private String getPrimaryKeyFromParam(String paramName, List<UriParameter> keyParams) {
-        String param = null;
-
-        for (UriParameter uriParameter : keyParams) {
-            if (uriParameter.getName().equalsIgnoreCase(paramName)) {
-                param = uriParameter.getText().replace("\'", "");
-                break;
-            }
+     * Method Creates the entity for the source entity passed in and persists it
+     * @param entity Source entity
+     * @return Entity that was newly created
+     */
+    @Override
+    public Entity createEntity(Entity entity) throws ODataException {
+        LOG.info("In createEntity method");
+        if (entity == null) {
+            return null;
         }
-
-        return param;
+        BaseEntity be = getBaseEntityByKey(entity);
+        if (be == null) {
+            ODataTypeTranslator odtt = typeTranslators.get(entity.getType());
+            Map<String,BaseEntity> baseEntities = objects.get(entity.getType());
+            be = odtt.translate(entity, true);
+            if (be.getId() == null) {
+                setNextKey(be, baseEntities);
+            }
+            baseEntities.put(be.getId(), be);
+            return odtt.translate(be);
+        } else {
+            LOG.error(Messages.ERROR_ENTITY_ALREADY_EXISTS);
+            throw new ODataException(Messages.ERROR_ENTITY_ALREADY_EXISTS);
+        }
     }
 
     /**
-     * Method used to extract the Primary key from the URI passed in (ex Policy('1') will return 1)
-     * @param uri Uri for the object ex Product('1')
-     * @return String which is the primary key. 1 in the above example
+     * Method Updates the entity for the source entity passed in and persists it
+     * @param entity Source entity
+     * @param forceNulls If true a null passed in will replace a value, if false it won't
+     * @return Entity that was newly updated
      */
-    private String parseId(URI uri) {
-        Pattern p = Pattern.compile("-?\\d+");
-        Matcher m = p.matcher(uri.getRawPath());
-
-        if(m.find()) {
-            return m.group();
-        }
-        else {
+    @Override
+    public Entity updateEntity(Entity entity, boolean forceNulls) throws ODataException {
+        LOG.info("In updateEntity method");
+        if (entity == null) {
             return null;
         }
+        BaseEntity baseEntity = getBaseEntityByKey(entity);
+        if (baseEntity == null) {
+            throw new ODataException(Messages.ERROR_ENTITY_NOT_FOUND_FOR_UPDATE);
+        }
+        Map<String, BaseEntity> typeObjects = getBaseEntitiesByType(entity);
+        ODataTypeTranslator ott = typeTranslators.get(entity.getType());
+        baseEntity = ott.merge(entity, baseEntity, forceNulls);
+        typeObjects.put(baseEntity.getId(), baseEntity);
+        return ott.translate(baseEntity);
+    }
+
+    /**
+     * Method Deletes the entity for the source entity passed in and persists it
+     * @param edmEntitySet Source entitySet type
+     * @param keyPredicates Primary key to find record to delete
+     * @return Entity that was deleted from persistent storage
+     */
+    @Override
+    public Entity deleteEntity(EdmEntitySet edmEntitySet, List<UriParameter> keyPredicates) throws ODataException {
+        LOG.info("In deleteEntity method");
+        // Null check
+        if ((edmEntitySet == null) || (keyPredicates == null)) {
+            return null;
+        }
+        Map<String, BaseEntity> typeObjects = objects.get(edmEntitySet.getEntityType().getName());
+        String id = Util.getPrimaryKeyFromParam(edmEntitySet.getEntityType().getKeyPredicateNames(),keyPredicates);
+        typeObjects.remove(id);
+        return null;
+    }
+
+    /**
+     * Method Upserts the entity for the source entity passed in and persists it.
+     * It will update it if it matches an existing record by key, otherwise it will create new
+     * @param entity Source entity
+     * @param forceNulls If true a null passed in will replace a value, if false it won't
+     * @return Entity that was upserted in storage
+     */
+    @Override
+    public Entity upsertEntity(Entity entity, boolean forceNulls) throws ODataException {
+        LOG.info("In upsertEntity method");
+        if (entity == null) {
+            return null;
+        }
+        BaseEntity be = getBaseEntityByKey(entity);
+        if (be == null) {
+            return createEntity(entity);
+        } else {
+            return updateEntity(entity, forceNulls);
+        }
+    }
+
+    /**
+     * Method will return a Maps of Base entity types based on the entity passed in.
+     * @param entity Entity type to use as base for lookup
+     * @return Map of BaseEntities for the type by id
+     * @throws ODataException If an error occured looking up the entity
+     */
+    private Map<String, BaseEntity> getBaseEntitiesByType(Entity entity) throws ODataException {
+        LOG.info("In getBaseEntitiesByType method");
+        // Get the type
+        String entityType = entity.getType();
+        if (entityType == null) {
+            throw new ODataException("Entity type for Entity passed in not found");
+        }
+        return objects.get(entityType);
+    }
+
+    /**
+     * Method will return a Base entity type based on the entity passed in.
+     * @param entity Entity type to use as base for lookup
+     * @return BaseEntity subclass if found or null
+     * @throws ODataException If an error occured looking up the entity
+     */
+    private BaseEntity getBaseEntityByKey(Entity entity) throws ODataException {
+        LOG.info("In getBaseEntityByKey method");
+        Map<String, BaseEntity> typeObjects = getBaseEntitiesByType(entity);
+        Property property = entity.getProperty(Constants.ID);
+        if ((property == null) || (property.getValue() == null)) {
+            return null;
+        }
+
+        // Retrieve by Id
+        String id = (String) property.getValue();
+        return typeObjects.get(id);
+    }
+
+    /**
+     * Method finds the last key and sets the BaseEntity's subclass to max value + 1
+     * @param baseEntity Base Entity value whose key to set
+     * @param entityMap Map of all the entities for the type
+     */
+    private void setNextKey(BaseEntity baseEntity, Map<String, BaseEntity> entityMap) {
+        LOG.info("In setNextKey method");
+        int newKey = 0;
+        for (String key : entityMap.keySet()) {
+           int keyValue = Integer.parseInt(key);
+           newKey = Math.max(newKey, keyValue);
+        }
+        baseEntity.setId(Integer.toString(newKey+1));
     }
 }

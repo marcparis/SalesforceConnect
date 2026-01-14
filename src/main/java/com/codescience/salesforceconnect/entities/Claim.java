@@ -10,7 +10,7 @@ import java.util.TreeSet;
  */
 public class Claim extends BaseEntity {
 
-    static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private Policy policy;
 
@@ -134,7 +134,7 @@ public class Claim extends BaseEntity {
             return;
         }
 
-        this.beneficiaries = this.beneficiaries == null ? new TreeSet<Beneficiary>() : this.beneficiaries;
+        this.beneficiaries = this.beneficiaries == null ? new TreeSet<>() : this.beneficiaries;
         beneficiary.setClaim(this);
         this.beneficiaries.add(beneficiary);
     }
@@ -148,7 +148,7 @@ public class Claim extends BaseEntity {
             return;
         }
 
-        this.beneficiaries = this.beneficiaries == null ? new TreeSet<Beneficiary>() : this.beneficiaries;
+        this.beneficiaries = this.beneficiaries == null ? new TreeSet<>() : this.beneficiaries;
         if (this.beneficiaries.remove(beneficiary)) {
             beneficiary.setClaim(null);
         }

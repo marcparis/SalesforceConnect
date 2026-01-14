@@ -8,7 +8,7 @@ import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Subclass of ODataTypeTranslator to handle claims Translation from Pojo Claim object to Olingo Entity Object.
@@ -30,7 +30,7 @@ public class ClaimTypeTranslator extends ODataTypeTranslator {
         entity.addProperty(new Property(null, Constants.CLAIM_REASON, ValueType.PRIMITIVE, claim.getClaimReason()));
         entity.addProperty(new Property(null, Constants.CLAIM_APPROVED, ValueType.PRIMITIVE, claim.isApproved()));
         if (claim.getClaimAmount() != null) {
-            entity.addProperty(new Property(null, Constants.CLAIM_AMOUNT, ValueType.PRIMITIVE, claim.getClaimAmount().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+            entity.addProperty(new Property(null, Constants.CLAIM_AMOUNT, ValueType.PRIMITIVE, claim.getClaimAmount().setScale(0, RoundingMode.HALF_EVEN)));
         }
         entity.addProperty(new Property(null, Constants.CLAIM_POLICY_ID, ValueType.PRIMITIVE, claim.getPolicy().getId()));
         entity.setType(OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString());
@@ -43,6 +43,15 @@ public class ClaimTypeTranslator extends ODataTypeTranslator {
      * @return String with the Claim Set Name
      */
     public String getEntitySetName() {
-        return OdataEdmProvider.ES_CLAIMS_NAME;
+        return Constants.ES_CLAIMS_NAME;
+    }
+
+    /**
+     * Each translator will return the appropriate class name of the BaseEntity it represents
+     * @return Name of the Claim Class
+     */
+    @Override
+    public String getClassName() {
+        return Claim.class.getName();
     }
 }

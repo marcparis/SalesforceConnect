@@ -1,13 +1,14 @@
 package com.codescience.salesforceconnect.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Implementation of the BaseEnity for each individual Beneficiary
  */
 public class Beneficiary extends BaseEntity {
 
-    static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private BigDecimal beneficiaryPercent;
 
@@ -42,7 +43,7 @@ public class Beneficiary extends BaseEntity {
      */
     public BigDecimal getBeneficiaryAmount() {
         if ((claim != null) && (getBeneficiaryPercent() != null) && claim.getClaimAmount() != null) {
-            return claim.getClaimAmount().multiply(getBeneficiaryPercent().divide(BigDecimal.valueOf(100),BigDecimal.ROUND_HALF_EVEN));
+            return claim.getClaimAmount().multiply(getBeneficiaryPercent().divide(BigDecimal.valueOf(100), RoundingMode.HALF_EVEN));
         }
         return null;
     }

@@ -8,7 +8,7 @@ import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Subclass of ODataTypeTranslator to handle Product Translation from Pojo Produc t object to Olingo Entity Object.
@@ -29,7 +29,7 @@ public class ProductTypeTranslator extends ODataTypeTranslator {
         entity.addProperty(new Property(null, Constants.PRODUCT_NAME, ValueType.PRIMITIVE, product.getProductName()));
         entity.addProperty(new Property(null, Constants.PRODUCT_TYPE, ValueType.PRIMITIVE, product.getProductType()));
         if (product.getCostPerUnit() != null) {
-            entity.addProperty(new Property(null, Constants.COST_PER_UNIT_AMOUNT, ValueType.PRIMITIVE, product.getCostPerUnit().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+            entity.addProperty(new Property(null, Constants.COST_PER_UNIT, ValueType.PRIMITIVE, product.getCostPerUnit().setScale(0, RoundingMode.HALF_EVEN)));
         }
         entity.addProperty(new Property(null, Constants.PRODUCT_ACTIVE, ValueType.PRIMITIVE, product.isActive()));
         entity.setType(OdataEdmProvider.ET_PRODUCT_FQN.getFullQualifiedNameAsString());
@@ -42,6 +42,15 @@ public class ProductTypeTranslator extends ODataTypeTranslator {
      * @return String with the Product Set Name
      */
     public String getEntitySetName() {
-        return OdataEdmProvider.ES_PRODUCTS_NAME;
+        return Constants.ES_PRODUCTS_NAME;
+    }
+
+    /**
+     * Each translator will return the appropriate class name of the BaseEntity it represents
+     * @return Name of the Product Class
+     */
+    @Override
+    public String getClassName() {
+        return Product.class.getName();
     }
 }

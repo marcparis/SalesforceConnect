@@ -8,7 +8,7 @@ import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Subclass of ODataTypeTranslator to handle Beneficiary Translation from Pojo Beneficiary object to Olingo Entity Object.
@@ -28,7 +28,7 @@ public class BeneficiaryTypeTranslator extends ODataTypeTranslator {
         entity.addProperty(new Property(null, Constants.BENEFICIARY_ID, ValueType.PRIMITIVE, beneficiary.getId()));
         entity.addProperty(new Property(null, Constants.BENEFICIARY_PERCENT, ValueType.PRIMITIVE, beneficiary.getBeneficiaryPercent()));
         if (beneficiary.getBeneficiaryAmount() != null) {
-            entity.addProperty(new Property(null, Constants.BENEFICIARY_AMOUNT, ValueType.PRIMITIVE, beneficiary.getBeneficiaryAmount().setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+            entity.addProperty(new Property(null, Constants.BENEFICIARY_AMOUNT, ValueType.PRIMITIVE, beneficiary.getBeneficiaryAmount().setScale(0, RoundingMode.HALF_EVEN)));
         }
         entity.addProperty(new Property(null, Constants.CONTACT_IDENTIFIER, ValueType.PRIMITIVE, beneficiary.getContactIdentifierId()));
         entity.addProperty(new Property(null, Constants.BENEFICIARY_CLAIM_ID, ValueType.PRIMITIVE, beneficiary.getClaim().getId()));
@@ -42,6 +42,15 @@ public class BeneficiaryTypeTranslator extends ODataTypeTranslator {
      * @return String with the Beneficiary Set Name
      */
     public String getEntitySetName() {
-        return OdataEdmProvider.ES_BENEFICIARIES_NAME;
+        return Constants.ES_BENEFICIARIES_NAME;
+    }
+
+    /**
+     * Each translator will return the appropriate class name of the BaseEntity it represents
+     * @return Name of the Policy Class
+     */
+    @Override
+    public String getClassName() {
+        return Beneficiary.class.getName();
     }
 }
