@@ -17,7 +17,7 @@ import java.math.RoundingMode;
 public class PolicyTypeTranslator extends ODataTypeTranslator {
 
     /**
-     * Implementation method to translate the BaseEntity inmplementation (Policy) to an Odata Entity object
+     * Implementation method to translate the BaseEntity implementation (Policy) to an Odata Entity object
      * @param object BaseEntity implementation (Policy)
      * @return Olingo entity for the Policy
      */
@@ -25,7 +25,7 @@ public class PolicyTypeTranslator extends ODataTypeTranslator {
         Policy policy = (Policy) object;
         Entity entity = new Entity();
 
-        entity.addProperty(new Property(null, Constants.POLICY_ID, ValueType.PRIMITIVE, policy.getId()));
+        entity.addProperty(new Property(null, Constants.ID, ValueType.PRIMITIVE, policy.getId()));
         entity.addProperty(new Property(null, Constants.NUMBER_OF_UNITS, ValueType.PRIMITIVE, policy.getNumberOfUnits()));
         entity.addProperty(new Property(null, Constants.POLICY_END_DATE, ValueType.PRIMITIVE, policy.getPolicyEndDate()));
         entity.addProperty(new Property(null, Constants.POLICY_HOLDER_ID, ValueType.PRIMITIVE, policy.getPolicyHolderId()));
@@ -36,7 +36,7 @@ public class PolicyTypeTranslator extends ODataTypeTranslator {
         entity.addProperty(new Property(null, "Active", ValueType.PRIMITIVE, policy.isActive()));
         entity.addProperty(new Property(null, "ProductId", ValueType.PRIMITIVE, policy.getProduct().getId()));
         entity.setType(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString());
-        entity.setId(createId(entity, Constants.POLICY_ID));
+        entity.setId(createId(entity, Constants.ID));
         return entity;
     }
 

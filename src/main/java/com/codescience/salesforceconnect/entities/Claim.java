@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Implementation of the BaseEnity for each individual Claim
+ * Implementation of the BaseEntity for each individual Claim
  */
 public class Claim extends BaseEntity {
 
@@ -126,7 +126,7 @@ public class Claim extends BaseEntity {
     }
 
     /**
-     * Method adds a Beneficiary to the Set of Beneficiaries and it sets the claim to this claim
+     * Method adds a Beneficiary to the Set of Beneficiaries, and it sets the claim to this claim
      * @param beneficiary Beneficiary to add
      */
     public void addBeneficiary(Beneficiary beneficiary) {

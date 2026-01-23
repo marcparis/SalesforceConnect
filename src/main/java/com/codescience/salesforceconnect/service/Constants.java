@@ -2,7 +2,7 @@ package com.codescience.salesforceconnect.service;
 
 /**
  * Constants defined for the application
- * Created by marcpparis on 2/20/17.
+ * Created by Marc Paris on 2/20/17.
  */
 public class Constants {
 
@@ -33,11 +33,11 @@ public class Constants {
     public static final String ES_BENEFICIARIES_NAME = "Beneficiaries";
 
 
+    public static final String SETTER_PREFIX = "set";
+
     public static final String ID= "Id";
 
     // PRODUCT PARAMETER CONSTANTS
-    public static final String PRODUCT_ID = ID;
-
     public static final String PRODUCT_NAME = "ProductName";
 
     public static final String PRODUCT_TYPE = "ProductType";
@@ -47,8 +47,6 @@ public class Constants {
     public static final String PRODUCT_ACTIVE = "Active";
 
     // POLICY PARAMETER CONSTANTS
-    public static final String POLICY_ID = ID;
-
     public static final String POLICY_START_DATE = "PolicyStartDate";
 
     public static final String POLICY_END_DATE = "PolicyEndDate";
@@ -66,8 +64,6 @@ public class Constants {
     public static final String POLICY_PRODUCT_ID = "ProductId";
 
     // CLAIM PARAMETER CONSTANTS
-    public static final String CLAIM_ID = ID;
-
     public static final String CLAIM_DATE = "ClaimDate";
 
     public static final String CLAIM_REASON = "ClaimReason";
@@ -83,9 +79,6 @@ public class Constants {
     public static final String CLAIM_POLICY_ID = "PolicyId";
 
     // BENEFICIARY PARAMETER CONSTANTS
-
-    public static final String BENEFICIARY_ID = ID;
-
     public static final String BENEFICIARY_PERCENT = "BeneficiaryPercent";
 
     public static final String BENEFICIARY_AMOUNT = "BeneficiaryAmount";
@@ -97,4 +90,9 @@ public class Constants {
     public static final String BENEFICIARIES = "Beneficiaries";
 
     public static final String BENEFICIARY_CLAIM_ID = "ClaimId";
+
+    /**
+     * Private Constructor prevents instantiation
+     */
+    private Constants() {}
 }

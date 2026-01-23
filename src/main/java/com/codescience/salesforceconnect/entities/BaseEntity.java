@@ -1,7 +1,5 @@
 package com.codescience.salesforceconnect.entities;
 
-import org.springframework.lang.NonNull;
-
 import java.io.Serializable;
 
 /**
@@ -14,7 +12,7 @@ public abstract class BaseEntity implements Serializable, Comparable<BaseEntity>
     private String id;
 
     /**
-     * Method returns the Id (Primary Key) parameter.  All entities assumed to have Integer primary keys
+     * Method returns the ID (Primary Key) parameter.  All entities assumed to have Integer primary keys
      * @return String representing a primary key
      */
     public String getId() {
@@ -22,7 +20,7 @@ public abstract class BaseEntity implements Serializable, Comparable<BaseEntity>
     }
 
     /**
-     * Method sets the Id (Primary Key) parameter. All entities assumed to have Integer primary keys
+     * Method sets the ID (Primary Key) parameter. All entities assumed to have Integer primary keys
      * @param id String representing a primary key
      */
     public void setId(String id) {
@@ -52,14 +50,14 @@ public abstract class BaseEntity implements Serializable, Comparable<BaseEntity>
     }
 
     /**
-     * Method compares the argument passed in to Id parameter of the base entity. If the value passed in is a different type than Base Entity return 0
+     * Method compares the argument passed in to ID parameter of the base entity. If the value passed in is a different type than Base Entity return 0
      * If the object passed in is null return -1 (nulls go to the end). If the object passed in has a null id and this object has a null id return 0
      * If one object has a null id it's sent to the end.
      * @param be BaseEntity to compare
      * @return 0 if they are the same, -1 if this object is smaller, 1 if this object is bigger
      */
-    public int compareTo(@NonNull BaseEntity be) {
-        int returnValue = 0;
+    public int compareTo(BaseEntity be) {
+        int returnValue;
         if ((be != this)) {
             if ((be.getId() == null) && (getId() == null)) {
                 returnValue = 0;
@@ -70,6 +68,8 @@ public abstract class BaseEntity implements Serializable, Comparable<BaseEntity>
             } else {
                 returnValue = getId().compareTo(be.getId());
             }
+        } else {
+            returnValue = 0;
         }
 
         return returnValue;

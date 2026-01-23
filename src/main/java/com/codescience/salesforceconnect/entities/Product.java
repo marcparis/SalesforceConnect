@@ -3,7 +3,7 @@ package com.codescience.salesforceconnect.entities;
 import java.math.BigDecimal;
 
 /**
- * Implementation of the BaseEnity for each individual Insurance Product
+ * Implementation of the BaseEntity for each individual Insurance Product
  */
 public class Product extends BaseEntity {
 

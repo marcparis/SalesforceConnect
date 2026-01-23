@@ -1,12 +1,17 @@
 package com.codescience.salesforceconnect.entities;
 
+import com.codescience.salesforceconnect.service.Messages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * Implementation of the BaseEnity for each individual Beneficiary
+ * Implementation of the BaseEntity for each individual Beneficiary
  */
 public class Beneficiary extends BaseEntity {
+    private static final Logger LOG = LoggerFactory.getLogger(Beneficiary.class);
 
     private static final long serialVersionUID = 1L;
 
@@ -25,16 +30,19 @@ public class Beneficiary extends BaseEntity {
     }
 
     /**
-     * Method sets the beneficiary percent - A value between 0 and 100 or null if not sepecified
+     * Method sets the beneficiary percent - A value between 0 and 100 or null if not specified
      * @param beneficiaryPercent BigDecimal representing the Beneficiary Percent
      */
     public void setBeneficiaryPercent(BigDecimal beneficiaryPercent) {
-        if (beneficiaryPercent != null) {
-            if (beneficiaryPercent.compareTo(BigDecimal.ZERO) < 0 || beneficiaryPercent.compareTo(BigDecimal.valueOf(100)) > 0) {
-                throw new IllegalArgumentException("The value passed in for the Beneficiary Percent " + beneficiaryPercent + " must be between 0 and 100");
-            }
+        if (beneficiaryPercent == null) {
+            this.beneficiaryPercent = null;
         }
-        this.beneficiaryPercent = beneficiaryPercent;
+        else if (beneficiaryPercent.compareTo(BigDecimal.ZERO) < 0 || beneficiaryPercent.compareTo(BigDecimal.valueOf(100)) > 0) {
+            LOG.error(Messages.INVALID_BENEFICIARY_PERCENT);
+            throw new IllegalArgumentException(Messages.INVALID_BENEFICIARY_PERCENT);
+        } else {
+            this.beneficiaryPercent = beneficiaryPercent;
+        }
     }
 
     /**

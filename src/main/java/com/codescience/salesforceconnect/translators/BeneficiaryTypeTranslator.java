@@ -17,7 +17,7 @@ import java.math.RoundingMode;
 public class BeneficiaryTypeTranslator extends ODataTypeTranslator {
 
     /**
-     * Implementation method to translate the BaseEntity inmplementation (Beneficiary) to an Odata Entity object
+     * Implementation method to translate the BaseEntity implementation (Beneficiary) to an Odata Entity object
      * @param object BaseEntity implementation (Beneficiary)
      * @return Olingo entity for the Beneficiary
      */
@@ -25,7 +25,7 @@ public class BeneficiaryTypeTranslator extends ODataTypeTranslator {
         Beneficiary beneficiary = (Beneficiary) object;
         Entity entity = new Entity();
 
-        entity.addProperty(new Property(null, Constants.BENEFICIARY_ID, ValueType.PRIMITIVE, beneficiary.getId()));
+        entity.addProperty(new Property(null, Constants.ID, ValueType.PRIMITIVE, beneficiary.getId()));
         entity.addProperty(new Property(null, Constants.BENEFICIARY_PERCENT, ValueType.PRIMITIVE, beneficiary.getBeneficiaryPercent()));
         if (beneficiary.getBeneficiaryAmount() != null) {
             entity.addProperty(new Property(null, Constants.BENEFICIARY_AMOUNT, ValueType.PRIMITIVE, beneficiary.getBeneficiaryAmount().setScale(0, RoundingMode.HALF_EVEN)));
@@ -33,7 +33,7 @@ public class BeneficiaryTypeTranslator extends ODataTypeTranslator {
         entity.addProperty(new Property(null, Constants.CONTACT_IDENTIFIER, ValueType.PRIMITIVE, beneficiary.getContactIdentifierId()));
         entity.addProperty(new Property(null, Constants.BENEFICIARY_CLAIM_ID, ValueType.PRIMITIVE, beneficiary.getClaim().getId()));
         entity.setType(OdataEdmProvider.ET_BENEFICIARY_FQN.getFullQualifiedNameAsString());
-        entity.setId(createId(entity, Constants.BENEFICIARY_ID));
+        entity.setId(createId(entity, Constants.ID));
         return entity;
     }
 

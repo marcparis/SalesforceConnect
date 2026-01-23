@@ -17,7 +17,7 @@ import java.math.RoundingMode;
 public class ClaimTypeTranslator extends ODataTypeTranslator {
 
     /**
-     * Implementation method to translate the BaseEntity inmplementation (Claim) to an Odata Entity object
+     * Implementation method to translate the BaseEntity implementation (Claim) to an Odata Entity object
      * @param object BaseEntity implementation
      * @return Olingo entity for the Claim
      */
@@ -25,7 +25,7 @@ public class ClaimTypeTranslator extends ODataTypeTranslator {
         Claim claim = (Claim) object;
         Entity entity = new Entity();
 
-        entity.addProperty(new Property(null, Constants.CLAIM_ID, ValueType.PRIMITIVE, claim.getId()));
+        entity.addProperty(new Property(null, Constants.ID, ValueType.PRIMITIVE, claim.getId()));
         entity.addProperty(new Property(null, Constants.CLAIM_DATE, ValueType.PRIMITIVE, claim.getClaimDate()));
         entity.addProperty(new Property(null, Constants.CLAIM_REASON, ValueType.PRIMITIVE, claim.getClaimReason()));
         entity.addProperty(new Property(null, Constants.CLAIM_APPROVED, ValueType.PRIMITIVE, claim.isApproved()));
@@ -34,7 +34,7 @@ public class ClaimTypeTranslator extends ODataTypeTranslator {
         }
         entity.addProperty(new Property(null, Constants.CLAIM_POLICY_ID, ValueType.PRIMITIVE, claim.getPolicy().getId()));
         entity.setType(OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString());
-        entity.setId(createId(entity, Constants.CLAIM_ID));
+        entity.setId(createId(entity, Constants.ID));
         return entity;
     }
 

@@ -13,16 +13,23 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.ex.ODataException;
+import org.apache.olingo.commons.api.http.HttpStatusCode;
+import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
-import org.apache.olingo.server.api.uri.queryoption.*;
+import org.apache.olingo.server.api.uri.UriResource;
+import org.apache.olingo.server.api.uri.UriResourcePrimitiveProperty;
+import org.apache.olingo.server.api.uri.queryoption.FilterOption;
+import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
+import org.apache.olingo.server.api.uri.queryoption.OrderByOption;
+import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
+import org.apache.olingo.server.api.uri.queryoption.expression.ExpressionVisitException;
+import org.apache.olingo.server.api.uri.queryoption.expression.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Implementation of the Storage interface that stores Simple Java objects in a Map
@@ -37,7 +44,7 @@ public class StoragePojo implements Storage {
     }
 
     /**
-     * Method used to initialize default pojos as the entity model
+     * Method used to initialize default Pojo records as the entity model
      */
     private void initializeData() {
         LOG.info("In initializeData method");
@@ -192,76 +199,17 @@ public class StoragePojo implements Storage {
      * @return EntityCollection containing Entities read from Pojo storage
      */
     @Override
-    public EntityCollection readEntitySetData(EdmEntitySet edmEntitySet, UriInfo uriInfo) throws ODataException {
+    public EntityCollection readEntitySetData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
         LOG.info("In readEntitySetData method");
         EntityCollection entitySet = new EntityCollection();
 
-        EdmEntityType edmEntityType = edmEntitySet.getEntityType();
-        String objectType = edmEntityType.getFullQualifiedName().getFullQualifiedNameAsString();
-        ODataTypeTranslator odtt = getTypeTranslators().get(objectType);
-
-        FilterOption filterOption = uriInfo.getFilterOption();
-        SelectOption selectOption = uriInfo.getSelectOption();
-        TopOption topOption = uriInfo.getTopOption();
-        SkipOption skipOption = uriInfo.getSkipOption();
-        OrderByOption orderByOption = uriInfo.getOrderByOption();
-
-        // TODO Enhance using more general expressions and visitors (future session)
-        // TODO Currently the code can only handle id eq value querries on primary keys.
-        // TODO Visitors provide a much more extensive and capable process and will be added next session
-        String id = null;
-        boolean primaryKey = false;
-        boolean claimId = false;
-        boolean policyId = false;
-        boolean productId = false;
-
-        if (filterOption != null) {
-            String value = filterOption.getText().toLowerCase();
-            if (value.contains("claimid eq")) {
-                claimId = true;
-            }
-            else if (value.contains("policyid eq")) {
-                policyId = true;
-
-            }
-            else if (value.contains("productid eq")) {
-                productId = true;
-            }
-            else if (value.contains("id eq")) {
-                primaryKey = true;
-            }
-            Pattern p = Pattern.compile("-?\\d+");
-            Matcher m = p.matcher(value);
-            while (m.find()) {
-                id = m.group();
-            }
-        }
-        // Find the object with the key
-        for (BaseEntity baseEntity : objects.get(objectType).values()) {
-            if (id == null) {
-                entitySet.getEntities().add(odtt.translate(baseEntity));
-            }
-            else if (primaryKey && baseEntity.getId().equalsIgnoreCase(id)) {
-                entitySet.getEntities().add(odtt.translate(baseEntity));
-            }
-            else if (claimId) {
-                Beneficiary ben = (Beneficiary) baseEntity;
-                if (ben.getClaim().getId().equalsIgnoreCase(id)) {
-                    entitySet.getEntities().add(odtt.translate(baseEntity));
-                }
-            }
-            else if (policyId) {
-                Claim claim = (Claim) baseEntity;
-                if (claim.getPolicy().getId().equalsIgnoreCase(id)) {
-                    entitySet.getEntities().add(odtt.translate(baseEntity));
-                }
-            }
-            else if (productId) {
-                Policy pol = (Policy) baseEntity;
-                if (pol.getProduct().getId().equalsIgnoreCase(id)) {
-                    entitySet.getEntities().add(odtt.translate(baseEntity));
-                }
-            }
+        try {
+            filterEntities(uriInfo.getFilterOption(), entitySet, edmEntitySet);
+            processOrder(entitySet, uriInfo);
+        } catch (ODataApplicationException e) {
+            throw new RuntimeException(e);
+        } catch (ExpressionVisitException e) {
+            throw new RuntimeException(e);
         }
 
         return entitySet;
@@ -274,7 +222,7 @@ public class StoragePojo implements Storage {
      * @return Entity object containing data or null if nothing found
      */
     @Override
-    public Entity readEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams) throws ODataException {
+    public Entity readEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams) {
         LOG.info("In readEntityData method");
         EdmEntityType edmEntityType = edmEntitySet.getEntityType();
         FullQualifiedName fqn = edmEntityType.getFullQualifiedName();
@@ -309,13 +257,13 @@ public class StoragePojo implements Storage {
     }
 
     /**
-     * Method takes a source entity object and will return the related collection of targetentity type objects specified
+     * Method takes a source entity object and will return the related collection of target entity type objects specified
      * @param sourceEntity Source entity that is related to the returned target entity collection
      * @param targetEntityType Target entity type that should be returned
      * @return EntityCollection populated with 0 or more TargetEntityType objects
      */
     @Override
-    public EntityCollection getRelatedEntityCollection(Entity sourceEntity, EdmEntityType targetEntityType) throws ODataException {
+    public EntityCollection getRelatedEntityCollection(Entity sourceEntity, EdmEntityType targetEntityType) {
         LOG.info("In getRelatedEntityCollection method");
         Map<String, BaseEntity> entities = objects.get(sourceEntity.getType());
         BaseEntity ent = entities.get(Util.parseId(sourceEntity.getId()));
@@ -323,7 +271,7 @@ public class StoragePojo implements Storage {
         EntityCollection ec = new EntityCollection();
 
         // For brevity and clarity purposes the code will check the types and load the relationship data from the underlying objects. Normally implement in a more generic fashion by autowiring or configuring
-        // metadata lookups between the Odata entity model and the underlying persistance model
+        // metadata lookups between the Odata entity model and the underlying persistence model
 
         // If this object is a policy, and the target is a claim return the underlying claims from the policy object and translate
         if ((targetEntityType.getFullQualifiedName().equals(OdataEdmProvider.ET_CLAIM_FQN)) && (sourceEntity.getType().equals(OdataEdmProvider.ET_POLICY_FQN.getFullQualifiedNameAsString()))) {
@@ -356,7 +304,7 @@ public class StoragePojo implements Storage {
      * @return Entity of target type that matches the entity.
      */
     @Override
-    public Entity getRelatedEntity(Entity sourceEntity, EdmEntityType targetEntityType, List<UriParameter> keyPredicates) throws ODataException {
+    public Entity getRelatedEntity(Entity sourceEntity, EdmEntityType targetEntityType, List<UriParameter> keyPredicates) {
         LOG.info("In getRelatedEntity method");
         Map<String, BaseEntity> entities = objects.get(sourceEntity.getType());
         BaseEntity ent = entities.get(Util.parseId(sourceEntity.getId()));
@@ -367,7 +315,7 @@ public class StoragePojo implements Storage {
         String sourceTypeName = sourceEntity.getType();
 
         // For brevity and clarity purposes the code will check the types and load the relationship data from the underlying objects. Normally implement in a more generic fashion by autowiring or configuring
-        // metadata lookups between the Odata entity model and the underlying persistance model
+        // metadata lookups between the Odata entity model and the underlying persistence model
 
         // If the object is a claim object look up either the related policy, or the related beneficiary (selected among the list)
         if (OdataEdmProvider.ET_CLAIM_FQN.getFullQualifiedNameAsString().equals(sourceTypeName)) {
@@ -422,7 +370,7 @@ public class StoragePojo implements Storage {
      * @return EntityCollection populated with 0 or more TargetEntityType objects
      */
     @Override
-    public Entity getRelatedEntity(Entity sourceEntity, EdmEntityType targetEntityType) throws ODataException {
+    public Entity getRelatedEntity(Entity sourceEntity, EdmEntityType targetEntityType) {
         return getRelatedEntity(sourceEntity, targetEntityType, null);
     }
 
@@ -430,6 +378,7 @@ public class StoragePojo implements Storage {
      * Method Creates the entity for the source entity passed in and persists it
      * @param entity Source entity
      * @return Entity that was newly created
+     * @throws ODataException if error occurred creating the entity
      */
     @Override
     public Entity createEntity(Entity entity) throws ODataException {
@@ -458,6 +407,7 @@ public class StoragePojo implements Storage {
      * @param entity Source entity
      * @param forceNulls If true a null passed in will replace a value, if false it won't
      * @return Entity that was newly updated
+     * @throws ODataException if error occurred updating the entity
      */
     @Override
     public Entity updateEntity(Entity entity, boolean forceNulls) throws ODataException {
@@ -483,16 +433,16 @@ public class StoragePojo implements Storage {
      * @return Entity that was deleted from persistent storage
      */
     @Override
-    public Entity deleteEntity(EdmEntitySet edmEntitySet, List<UriParameter> keyPredicates) throws ODataException {
+    public Entity deleteEntity(EdmEntitySet edmEntitySet, List<UriParameter> keyPredicates) {
         LOG.info("In deleteEntity method");
         // Null check
         if ((edmEntitySet == null) || (keyPredicates == null)) {
             return null;
         }
+        ODataTypeTranslator odtt = typeTranslators.get(edmEntitySet.getEntityType().getName());
         Map<String, BaseEntity> typeObjects = objects.get(edmEntitySet.getEntityType().getName());
         String id = Util.getPrimaryKeyFromParam(edmEntitySet.getEntityType().getKeyPredicateNames(),keyPredicates);
-        typeObjects.remove(id);
-        return null;
+        return odtt.translate(typeObjects.remove(id));
     }
 
     /**
@@ -501,6 +451,7 @@ public class StoragePojo implements Storage {
      * @param entity Source entity
      * @param forceNulls If true a null passed in will replace a value, if false it won't
      * @return Entity that was upserted in storage
+     * @throws ODataException if error occurred creating or updating the entity
      */
     @Override
     public Entity upsertEntity(Entity entity, boolean forceNulls) throws ODataException {
@@ -520,14 +471,14 @@ public class StoragePojo implements Storage {
      * Method will return a Maps of Base entity types based on the entity passed in.
      * @param entity Entity type to use as base for lookup
      * @return Map of BaseEntities for the type by id
-     * @throws ODataException If an error occured looking up the entity
+     * @throws ODataException If an error occurred looking up the entity
      */
     private Map<String, BaseEntity> getBaseEntitiesByType(Entity entity) throws ODataException {
         LOG.info("In getBaseEntitiesByType method");
         // Get the type
         String entityType = entity.getType();
         if (entityType == null) {
-            throw new ODataException("Entity type for Entity passed in not found");
+            throw new ODataException(Messages.ERROR_ENTITY_TYPE_NOT_FOUND);
         }
         return objects.get(entityType);
     }
@@ -536,7 +487,7 @@ public class StoragePojo implements Storage {
      * Method will return a Base entity type based on the entity passed in.
      * @param entity Entity type to use as base for lookup
      * @return BaseEntity subclass if found or null
-     * @throws ODataException If an error occured looking up the entity
+     * @throws ODataException If an error occurred looking up the entity
      */
     private BaseEntity getBaseEntityByKey(Entity entity) throws ODataException {
         LOG.info("In getBaseEntityByKey method");
@@ -546,7 +497,7 @@ public class StoragePojo implements Storage {
             return null;
         }
 
-        // Retrieve by Id
+        // Retrieve by ID
         String id = (String) property.getValue();
         return typeObjects.get(id);
     }
@@ -564,5 +515,61 @@ public class StoragePojo implements Storage {
            newKey = Math.max(newKey, keyValue);
         }
         baseEntity.setId(Integer.toString(newKey+1));
+    }
+
+    /**
+     * Method processes the orderBy parameter and orders the list in ascending or descending order
+     * @param entitySet The Collection containing the entities to sort
+     * @param uriInfo URI Info object containing the sort parameters
+     */
+    private void processOrder(EntityCollection entitySet, UriInfo uriInfo) {
+        LOG.info("In processOrder method");
+        OrderByOption orderByOption = uriInfo.getOrderByOption();
+        if (orderByOption == null) {
+            return;
+        }
+
+        for (OrderByItem orderByItem : orderByOption.getOrders()) {
+            Expression expression = orderByItem.getExpression();
+            if (expression instanceof Member) {
+                for (UriResource uriResource : ((Member) expression).getResourcePath().getUriResourceParts()) {
+                    if (uriResource instanceof UriResourcePrimitiveProperty) {
+                        String sortPropertyName = ((UriResourcePrimitiveProperty)uriResource).getProperty().getName();
+                        EntityComparator entityComparator = new EntityComparator(sortPropertyName,orderByItem.isDescending());
+                        Collections.sort (entitySet.getEntities(), entityComparator);
+                    }
+                }
+            }
+        }
+    }
+
+    private void filterEntities(FilterOption filterOption, EntityCollection entitySet, EdmEntitySet edmEntitySet) throws ExpressionVisitException, ODataApplicationException {
+        EdmEntityType edmEntityType = edmEntitySet.getEntityType();
+        String objectType = edmEntityType.getFullQualifiedName().getFullQualifiedNameAsString();
+        ODataTypeTranslator odtt = getTypeTranslators().get(objectType);
+
+        for (BaseEntity baseEntity : objects.get(objectType).values()) {
+            entitySet.getEntities().add(odtt.translate(baseEntity));
+        }
+
+        if (filterOption == null) {
+            return;
+        }
+        Expression filterExpression = filterOption.getExpression();
+
+        Iterator<Entity> entityIterator = entitySet.getEntities().iterator();
+
+        while (entityIterator.hasNext()) {
+            Entity currentEntity = entityIterator.next();
+            PojoFilterExpressionVisitor pojoFilterExpressionVisitor = new PojoFilterExpressionVisitor(currentEntity);
+            Object visitorResult = filterExpression.accept(pojoFilterExpressionVisitor);
+            if (visitorResult instanceof Boolean) {
+                if (!Boolean.TRUE.equals(visitorResult)) {
+                    entityIterator.remove();
+                }
+            } else {
+                throw new ODataApplicationException("A filter expression must evaluate to type Edm.Boolean", HttpStatusCode.BAD_REQUEST.getStatusCode(), Locale.ENGLISH);
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Implementation of the BaseEnity for each individual Insurance Policy
+ * Implementation of the BaseEntity for each individual Insurance Policy
  */
 public class Policy extends BaseEntity {
 
@@ -57,7 +57,7 @@ public class Policy extends BaseEntity {
     }
 
     /**
-     * Method returns the End date of the policy. Null for policies that are active (i.e don't have an end date yet)
+     * Method returns the End date of the policy. Null for policies that are active (i.e. don't have an end date yet)
      * @return End Date of the Policy. Can be null
      */
     public Date getPolicyEndDate() {
@@ -65,7 +65,7 @@ public class Policy extends BaseEntity {
     }
 
     /**
-     * Method sets the End date of the policy. Null for policies that are active (i.e don't have an enddate determined yet)
+     * Method sets the End date of the policy. Null for policies that are active (i.e. don't have an end date determined yet)
      * @param policyEndDate End Date of the Policy. Can be null
      */
     public void setPolicyEndDate(Date policyEndDate) {
@@ -73,23 +73,23 @@ public class Policy extends BaseEntity {
     }
 
     /**
-     * Method contains a unique id to identify the Policy Holder
-     * @return Unique identifer to represent the Policy Holder
+     * Method contains a unique id to identify the PolicyHolder
+     * @return Unique identifier to represent the PolicyHolder
      */
     public String getPolicyHolderId() {
         return policyHolderId;
     }
 
     /**
-     * Method sets the Policy Holder Id. A unique id to identify the Policy Holder
-     * @param policyHolderId Unique Identifier to represent the Policy holder
+     * Method sets the PolicyHolder ID. A unique id to identify the PolicyHolder
+     * @param policyHolderId Unique Identifier to represent the PolicyHolder
      */
     public void setPolicyHolderId(String policyHolderId) {
         this.policyHolderId = policyHolderId;
     }
 
     /**
-     * Method returns the number of units. The Insurance policy is meansure in units with each unit corresponding to a block of coverage
+     * Method returns the number of units. The Insurance policy is measured in units with each unit corresponding to a block of coverage
      * @return Number of Units
      */
     public Integer getNumberOfUnits() {
@@ -107,21 +107,12 @@ public class Policy extends BaseEntity {
     /**
      * Method returns true if the Policy is Active. If the start date is not specified, it is not active
      * If the start date is specified but is after the current date, it is not active. If the end date
-     * is specified but is before the current date the policy is not active. Otherwise it is active
+     * is specified but is before the current date the policy is not active, otherwise it is active
      * @return true if the Policy is Active
      */
     public boolean isActive() {
         Date today = new Date();
-
-        if ((getPolicyStartDate() == null) || (getPolicyStartDate().after(today))) {
-            return false;
-        }
-
-        if ((getPolicyEndDate() != null) && (getPolicyEndDate().before(today))) {
-            return false;
-        }
-
-        return true;
+        return hasPolicyStarted(today) && !hasPolicyEnded(today);
     }
 
     /**
@@ -133,7 +124,7 @@ public class Policy extends BaseEntity {
         if ((product == null) || (product.getCostPerUnit() == null) || (getNumberOfUnits() == null)) {
             return null;
         }
-        return new BigDecimal(product.getCostPerUnit().doubleValue() * getNumberOfUnits());
+        return BigDecimal.valueOf(product.getCostPerUnit().doubleValue() * getNumberOfUnits());
     }
 
     /**
@@ -168,14 +159,14 @@ public class Policy extends BaseEntity {
 
     /**
      * Method adds a claim to collection of claims on the policy. It will set the policy on the claim as well
-     * @param claim Claim instancce to add
+     * @param claim Claim instance to add
      */
     public void addClaim(Claim claim) {
         if (claim == null) {
             return;
         }
 
-        this.claims = this.claims == null ? new TreeSet<Claim>() : this.claims;
+        this.claims = this.claims == null ? new TreeSet<>() : this.claims;
         claim.setPolicy(this);
         this.claims.add(claim);
     }
@@ -190,7 +181,7 @@ public class Policy extends BaseEntity {
             return;
         }
 
-        this.claims = this.claims == null ? new TreeSet<Claim>() : this.claims;
+        this.claims = this.claims == null ? new TreeSet<>() : this.claims;
         if (this.claims.remove(claim)) {
             claim.setPolicy(null);
         }
@@ -235,5 +226,23 @@ public class Policy extends BaseEntity {
                 ", policyHolderId=" + policyHolderId +
                 ", numberOfUnits=" + numberOfUnits +
                 "} " + super.toString();
+    }
+
+    /**
+     * Method returns true if the policy doesn't have a start date, or it's after the date passed in
+     * @param date Date to compare date passed in
+     * @return true if started false otherwise
+     */
+    private boolean hasPolicyStarted(Date date) {
+        return (getPolicyStartDate() != null) && (!getPolicyStartDate().after(date));
+    }
+
+    /**
+     * Method returns true if the policy has an end date, and it's in before the date passed in
+     * @param date Date to compare date passed in
+     * @return true if ended, false otherwise
+     */
+    private boolean hasPolicyEnded(Date date) {
+        return (getPolicyEndDate() != null) && (getPolicyEndDate().before(date));
     }
 }

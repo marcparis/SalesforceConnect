@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Implementation of CsdlAbstractEdmProvider to define the metadata
- * for the Odata object model
+ * for the OData object model
  */
 public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
@@ -142,7 +142,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
     /**
      * Method creates and returns a CsdlEntityContainer
-     * @return CsdlEntityContainer that contains the schema definition for the objects
+     * @return Contains the schema definition for the objects
      */
     @Override
     public CsdlEntityContainer getEntityContainer() {
@@ -165,7 +165,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
     /**
      * Method will return the CsdlEntityContainerInfo for the given container name passed in
      * @param entityContainerName FullQualified Container name
-     * @return CsdlEntityContainerInfo Defines the container information
+     * @return Defines the container information
      */
     @Override
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
@@ -180,13 +180,14 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         return null;
     }
 
+
     /**
      * Method returns a CsdlEntityType for the Product OData object
-     * @return CsdlEntityType Entity type for the Product (schema definition)
+     * @return The schema the Product type
      */
     private CsdlEntityType getProductEntityType() {
         //create EntityType properties
-        CsdlProperty productId = new CsdlProperty().setName(Constants.PRODUCT_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty productId = new CsdlProperty().setName(Constants.ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty productName = new CsdlProperty().setName(Constants.PRODUCT_NAME).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty productType = new CsdlProperty().setName(Constants.PRODUCT_TYPE).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty costPerUnit = new CsdlProperty().setName(Constants.COST_PER_UNIT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
@@ -194,7 +195,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
         // create CsdlPropertyRef for Key element
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        propertyRef.setName(Constants.PRODUCT_ID);
+        propertyRef.setName(Constants.ID);
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
@@ -207,11 +208,11 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
     /**
      * Method returns a CsdlEntityType for the Policy OData object
-     * @return CsdlEntityType Entity type for the policy (schema definition)
+     * @return The schema the Policy type
      */
     private CsdlEntityType getPolicyEntityType() {
         //create EntityType properties
-        CsdlProperty policyId = new CsdlProperty().setName(Constants.POLICY_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty policyId = new CsdlProperty().setName(Constants.ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty policyStartDate = new CsdlProperty().setName(Constants.POLICY_START_DATE).setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
         CsdlProperty policyEndDate = new CsdlProperty().setName(Constants.POLICY_END_DATE).setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
         CsdlProperty policyHolderId = new CsdlProperty().setName(Constants.POLICY_HOLDER_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
@@ -224,7 +225,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
         // create CsdlPropertyRef for Key element
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        propertyRef.setName(Constants.POLICY_ID);
+        propertyRef.setName(Constants.ID);
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
@@ -238,11 +239,11 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
     /**
      * Method returns a CsdlEntityType for the Claim OData object
-     * @return CsdlEntityType
+     * @return The schema the Claim type
      */
     private CsdlEntityType getClaimEntityType() {
         //create EntityType properties
-        CsdlProperty claimId = new CsdlProperty().setName(Constants.CLAIM_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty claimId = new CsdlProperty().setName(Constants.ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty claimDate = new CsdlProperty().setName(Constants.CLAIM_DATE).setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
         CsdlProperty claimReason = new CsdlProperty().setName(Constants.CLAIM_REASON).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty approved = new CsdlProperty().setName(Constants.CLAIM_APPROVED).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
@@ -253,7 +254,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
         // create CsdlPropertyRef for Key element
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        propertyRef.setName(Constants.CLAIM_ID);
+        propertyRef.setName(Constants.ID);
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();
@@ -265,9 +266,13 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
         return entityType;
     }
 
+    /**
+     * Method returns a CsdlEntityType for the Beneficiary OData object
+     * @return The schema the Beneficiary type
+     */
     private CsdlEntityType getBeneficiaryEntityType() {
         //create EntityType properties
-        CsdlProperty beneficiaryId = new CsdlProperty().setName(Constants.BENEFICIARY_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        CsdlProperty beneficiaryId = new CsdlProperty().setName(Constants.ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         CsdlProperty beneficiaryPercent = new CsdlProperty().setName(Constants.BENEFICIARY_PERCENT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
         CsdlProperty beneficiaryAmount = new CsdlProperty().setName(Constants.BENEFICIARY_AMOUNT).setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
         CsdlProperty contactIdentifierId = new CsdlProperty().setName(Constants.CONTACT_IDENTIFIER).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
@@ -276,7 +281,7 @@ public class OdataEdmProvider extends CsdlAbstractEdmProvider {
 
         // create CsdlPropertyRef for Key element
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        propertyRef.setName(Constants.BENEFICIARY_ID);
+        propertyRef.setName(Constants.ID);
 
         // configure EntityType
         CsdlEntityType entityType = new CsdlEntityType();

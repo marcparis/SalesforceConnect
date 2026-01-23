@@ -11,13 +11,13 @@ import org.apache.olingo.commons.api.data.ValueType;
 import java.math.RoundingMode;
 
 /**
- * Subclass of ODataTypeTranslator to handle Product Translation from Pojo Produc t object to Olingo Entity Object.
+ * Subclass of ODataTypeTranslator to handle Product Translation from Pojo Product object to Olingo Entity Object.
  * This does not do a &quot;Deep Clone&quot;
  */
 public class ProductTypeTranslator extends ODataTypeTranslator {
 
     /**
-     * Implementation method to translate the BaseEntity inmplementation (Product) to an Odata Entity object
+     * Implementation method to translate the BaseEntity implementation (Product) to an Odata Entity object
      * @param object BaseEntity implementation (Product)
      * @return Olingo entity for the Product
      */
@@ -25,7 +25,7 @@ public class ProductTypeTranslator extends ODataTypeTranslator {
         Product product = (Product) object;
         Entity entity = new Entity();
 
-        entity.addProperty(new Property(null, Constants.PRODUCT_ID, ValueType.PRIMITIVE, product.getId()));
+        entity.addProperty(new Property(null, Constants.ID, ValueType.PRIMITIVE, product.getId()));
         entity.addProperty(new Property(null, Constants.PRODUCT_NAME, ValueType.PRIMITIVE, product.getProductName()));
         entity.addProperty(new Property(null, Constants.PRODUCT_TYPE, ValueType.PRIMITIVE, product.getProductType()));
         if (product.getCostPerUnit() != null) {
@@ -33,7 +33,7 @@ public class ProductTypeTranslator extends ODataTypeTranslator {
         }
         entity.addProperty(new Property(null, Constants.PRODUCT_ACTIVE, ValueType.PRIMITIVE, product.isActive()));
         entity.setType(OdataEdmProvider.ET_PRODUCT_FQN.getFullQualifiedNameAsString());
-        entity.setId(createId(entity, Constants.PRODUCT_ID));
+        entity.setId(createId(entity, Constants.ID));
         return entity;
     }
 

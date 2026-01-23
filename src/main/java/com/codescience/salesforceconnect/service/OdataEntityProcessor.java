@@ -121,8 +121,7 @@ public class OdataEntityProcessor implements EntityProcessor {
             response.setStatusCode(HttpStatusCode.OK.getStatusCode());
             response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
         } catch (ODataException e) {
-            LOG.error(Messages.ERROR_READING_ENTITY,e);
-            throw new ODataApplicationException(Messages.ERROR_READING_ENTITY, HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode(), Locale.ROOT, e);
+            throw new ODataApplicationException(Messages.ERROR_READING_ENTITY + e.getMessage(), HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode(), Locale.ROOT, e);
         }
     }
 
@@ -160,8 +159,7 @@ public class OdataEntityProcessor implements EntityProcessor {
             response.setStatusCode(HttpStatusCode.CREATED.getStatusCode());
             response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
         } catch (ODataException e) {
-            LOG.error(Messages.ERROR_CREATING_ENTITY,e);
-            throw new ODataApplicationException(Messages.ERROR_CREATING_ENTITY, HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode(), Locale.ROOT, e);
+            throw new ODataApplicationException(Messages.ERROR_CREATING_ENTITY + e.getMessage(), HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode(), Locale.ROOT, e);
         }
     }
 
@@ -185,16 +183,12 @@ public class OdataEntityProcessor implements EntityProcessor {
 
             // If a PUT method - it will set to null any nullable setter non-primitive that is not passed int
             HttpMethod httpMethod = request.getMethod();
-            boolean forceNulls = false;
-            if (HttpMethod.PUT.equals(httpMethod)) {
-                forceNulls = true;
-            }
+            boolean forceNulls = HttpMethod.PUT.equals(httpMethod);
 
             // Update the entity and return
             getStorage().updateEntity(entity, forceNulls);
             response.setStatusCode(HttpStatusCode.NO_CONTENT.getStatusCode());
         } catch (ODataException e) {
-            LOG.error(Messages.ERROR_UPDATING_ENTITY,e);
             throw new ODataApplicationException(Messages.ERROR_UPDATING_ENTITY, HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode(), Locale.ROOT, e);
         }
     }
@@ -221,8 +215,7 @@ public class OdataEntityProcessor implements EntityProcessor {
             storage.deleteEntity(edmEntitySet, keyPredicates);
 
             response.setStatusCode(HttpStatusCode.NO_CONTENT.getStatusCode());
-        } catch (ODataException e) {
-            LOG.error(Messages.ERROR_UPDATING_ENTITY,e);
+        } catch (Exception e) {
             throw new ODataApplicationException(Messages.ERROR_UPDATING_ENTITY, HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode(), Locale.ROOT, e);
         }
     }
