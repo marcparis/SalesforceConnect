@@ -4,10 +4,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          id="WebApp_ID" version="2.5">
 
-    <filter>
-        <filter-name>JWTFilter</filter-name>
-        <filter-class>com.codescience.salesforceconnect.web.JWTFilter</filter-class>
-    </filter>
     <servlet>
         <servlet-name>ODataServlet</servlet-name>
         <servlet-class>com.codescience.salesforceconnect.web.ODataServlet</servlet-class>
@@ -17,10 +13,6 @@
         <servlet-name>ODataServlet</servlet-name>
         <url-pattern>/Odata.svc/*</url-pattern>
     </servlet-mapping>
-    <filter-mapping>
-        <filter-name>JWTFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>

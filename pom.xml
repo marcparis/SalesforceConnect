@@ -22,17 +22,16 @@
         <spring.version>7.0.1</spring.version>
         <maven.warplugin.version>3.5.1</maven.warplugin.version>
         <maven.plugin.version>3.9.0</maven.plugin.version>
-        <webapp.runner.version>9.0.41.0</webapp.runner.version>
+        <webapp.runner.version>10.1.50.0</webapp.runner.version>
         <codehaus.cargo.version>1.10.24</codehaus.cargo.version>
-        <tomcat.authenticator.version>2.0.1</tomcat.authenticator.version>
-        <auth0.version>3.0.0</auth0.version>
+        <auth0.version>4.5.0</auth0.version>
+        <jwksrsa.version>0.23.0</jwksrsa.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${javax.servlet.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.olingo</groupId>
@@ -114,14 +113,15 @@
             <version>${spring.version}</version>
         </dependency>
         <dependency>
-            <groupId>media.pepperpot.tca</groupId>
-            <artifactId>tomcat-jwt-authenticator</artifactId>
-            <version>${tomcat.authenticator.version}</version>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${auth0.version}</version>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
-            <artifactId>auth0</artifactId>
-            <version>${auth0.version}</version>
+            <artifactId>jwks-rsa</artifactId>
+            <version>${jwksrsa.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>
