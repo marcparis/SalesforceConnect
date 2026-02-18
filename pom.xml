@@ -172,7 +172,7 @@
                     </container>
                     <deployables>
                         <deployable>
-                            <groupId>com.codescience.salesforceconnect</groupId>
+                            <groupId>com.ibm.salesforceconnect</groupId>
                             <artifactId>SalesforceConnect</artifactId>
                             <type>war</type>
                         </deployable>
