@@ -1,6 +1,6 @@
-package com.codescience.salesforceconnect.entities;
+package com.ibm.salesforceconnect.entities;
 
-import com.codescience.salesforceconnect.service.Messages;
+import com.ibm.salesforceconnect.service.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

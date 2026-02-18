@@ -1,9 +1,9 @@
-package com.codescience.salesforceconnect.translators;
+package com.ibm.salesforceconnect.translators;
 
-import com.codescience.salesforceconnect.entities.BaseEntity;
-import com.codescience.salesforceconnect.service.Constants;
-import com.codescience.salesforceconnect.service.Messages;
-import com.codescience.salesforceconnect.util.Util;
+import com.ibm.salesforceconnect.entities.BaseEntity;
+import com.ibm.salesforceconnect.service.Constants;
+import com.ibm.salesforceconnect.service.Messages;
+import com.ibm.salesforceconnect.util.Util;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.ex.ODataException;

@@ -1,7 +1,7 @@
-package com.codescience.salesforceconnect.service;
+package com.ibm.salesforceconnect.service;
 
-import com.codescience.salesforceconnect.data.Storage;
-import com.codescience.salesforceconnect.util.Util;
+import com.ibm.salesforceconnect.data.Storage;
+import com.ibm.salesforceconnect.util.Util;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;

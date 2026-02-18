@@ -1,7 +1,7 @@
-package com.codescience.salesforceconnect.web;
+package com.ibm.salesforceconnect.web;
 
-import com.codescience.salesforceconnect.service.Constants;
-import com.codescience.salesforceconnect.service.Messages;
+import com.ibm.salesforceconnect.service.Constants;
+import com.ibm.salesforceconnect.service.Messages;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;

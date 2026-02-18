@@ -1,6 +1,6 @@
-package com.codescience.salesforceconnect.util;
+package com.ibm.salesforceconnect.util;
 
-import com.codescience.salesforceconnect.service.Messages;
+import com.ibm.salesforceconnect.service.Messages;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.edm.EdmBindingTarget;

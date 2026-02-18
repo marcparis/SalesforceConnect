@@ -1,4 +1,4 @@
-package com.codescience.salesforceconnect.entities;
+package com.ibm.salesforceconnect.entities;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;

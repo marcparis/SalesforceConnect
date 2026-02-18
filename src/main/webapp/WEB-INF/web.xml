@@ -6,7 +6,7 @@
 
     <servlet>
         <servlet-name>ODataServlet</servlet-name>
-        <servlet-class>com.codescience.salesforceconnect.web.ODataServlet</servlet-class>
+        <servlet-class>com.ibm.salesforceconnect.web.ODataServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>

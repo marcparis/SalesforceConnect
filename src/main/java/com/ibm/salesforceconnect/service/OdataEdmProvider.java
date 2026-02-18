@@ -1,4 +1,4 @@
-package com.codescience.salesforceconnect.service;
+package com.ibm.salesforceconnect.service;
 
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;

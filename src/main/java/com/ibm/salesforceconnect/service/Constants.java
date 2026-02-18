@@ -1,4 +1,4 @@
-package com.codescience.salesforceconnect.service;
+package com.ibm.salesforceconnect.service;
 
 /**
  * Constants defined for the application

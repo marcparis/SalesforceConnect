@@ -1,4 +1,4 @@
-package com.codescience.salesforceconnect.entities;
+package com.ibm.salesforceconnect.entities;
 
 import java.math.BigDecimal;
 import java.util.Date;

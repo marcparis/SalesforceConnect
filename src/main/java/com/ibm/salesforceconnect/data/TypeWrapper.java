@@ -1,4 +1,4 @@
-package com.codescience.salesforceconnect.data;
+package com.ibm.salesforceconnect.data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="storage" class="com.codescience.salesforceconnect.data.StoragePojo">
+    <bean id="storage" class="com.ibm.salesforceconnect.data.StoragePojo">
         <property name="typeTranslators">
             <map>
                 <entry key="OData.InsuranceSystem.Product">
-                    <bean class="com.codescience.salesforceconnect.translators.ProductTypeTranslator"/>
+                    <bean class="com.ibm.salesforceconnect.translators.ProductTypeTranslator"/>
                 </entry>
                 <entry key="OData.InsuranceSystem.Policy">
-                    <bean class="com.codescience.salesforceconnect.translators.PolicyTypeTranslator"/>
+                    <bean class="com.ibm.salesforceconnect.translators.PolicyTypeTranslator"/>
                 </entry>
                 <entry key="OData.InsuranceSystem.Claim">
-                    <bean class="com.codescience.salesforceconnect.translators.ClaimTypeTranslator"/>
+                    <bean class="com.ibm.salesforceconnect.translators.ClaimTypeTranslator"/>
                 </entry>
                 <entry key="OData.InsuranceSystem.Beneficiary">
-                    <bean class="com.codescience.salesforceconnect.translators.BeneficiaryTypeTranslator"/>
+                    <bean class="com.ibm.salesforceconnect.translators.BeneficiaryTypeTranslator"/>
                 </entry>
             </map>
         </property>
     </bean>
-    <bean id="entityCollectionProcessor" class="com.codescience.salesforceconnect.service.OdataEntityCollectionProcessor">
+    <bean id="entityCollectionProcessor" class="com.ibm.salesforceconnect.service.OdataEntityCollectionProcessor">
         <property name="storage" ref="storage"/>
     </bean>
-    <bean id="entityProcessor" class="com.codescience.salesforceconnect.service.OdataEntityProcessor">
+    <bean id="entityProcessor" class="com.ibm.salesforceconnect.service.OdataEntityProcessor">
         <property name="storage" ref="storage"/>
     </bean>
-    <bean id="edmProvider" class="com.codescience.salesforceconnect.service.OdataEdmProvider">
+    <bean id="edmProvider" class="com.ibm.salesforceconnect.service.OdataEdmProvider">
     </bean>
 </beans>

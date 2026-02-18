@@ -1,4 +1,4 @@
-package com.codescience.salesforceconnect.service;
+package com.ibm.salesforceconnect.service;
 
 /**
  * Class contains messages that can be localized

@@ -1,9 +1,9 @@
-package com.codescience.salesforceconnect.translators;
+package com.ibm.salesforceconnect.translators;
 
-import com.codescience.salesforceconnect.entities.BaseEntity;
-import com.codescience.salesforceconnect.entities.Beneficiary;
-import com.codescience.salesforceconnect.service.Constants;
-import com.codescience.salesforceconnect.service.OdataEdmProvider;
+import com.ibm.salesforceconnect.entities.BaseEntity;
+import com.ibm.salesforceconnect.entities.Beneficiary;
+import com.ibm.salesforceconnect.service.Constants;
+import com.ibm.salesforceconnect.service.OdataEdmProvider;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
